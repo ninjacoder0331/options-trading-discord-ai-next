@@ -1,0 +1,122 @@
+'use client';
+
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
+import apiClient from '@/lib/axios';
+import Cookies from 'js-cookie';
+
+interface User {
+  id: string;
+  email: string;
+  name: string;
+}
+
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  checkAuth: () => Promise<void>;
+  setAuthToken: (token: string) => void;
+  signout: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Public paths that don't need authentication
+const publicPaths = ['/', '/signin', '/signup', '/about'];
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const setAuthToken = (token: string) => {
+    // Set token in cookie (expires in 30 days)
+    Cookies.set('authToken', token, { expires: 1, secure: true });
+    // Update axios default headers
+    apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  };
+
+  const checkAuth = async () => {
+    try {
+      setLoading(true);
+      const token = Cookies.get('authToken');
+
+      if (!token) {
+        setUser(null);
+        return false;
+      }
+
+      // Set token in axios headers
+      apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+      const response = await apiClient.post('/api/auth/verify');
+      
+      if (response.data.valid) {
+        setUser(response.data.user);
+        return true;
+      } else {
+        setUser(null);
+        Cookies.remove('authToken');
+        delete apiClient.defaults.headers.common['Authorization'];
+        return false;
+      }
+    } catch (error) {
+      console.error('Auth check failed:', error);
+      setUser(null);
+      Cookies.remove('authToken');
+      delete apiClient.defaults.headers.common['Authorization'];
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signout = async () => {
+    
+      setUser(null);
+      Cookies.remove('authToken');
+      delete apiClient.defaults.headers.common['Authorization'];
+      router.push('/');
+      toast.success('Successfully signed out');
+      window.location.reload();
+
+  };
+
+  // Check auth on mount and URL changes
+  useEffect(() => {
+    const handleRouteChange = async () => {
+      const isPublicPath = ['/signin', '/signup', '/', '/about'].includes(pathname);
+      const isAuthenticated = await checkAuth();
+
+      if (!isPublicPath && !isAuthenticated) {
+        router.push(`/signin`);
+      } else if (isPublicPath && isAuthenticated) {
+        
+      }
+    };
+
+    handleRouteChange();
+  }, [pathname]);
+  return (
+    <AuthContext.Provider value={{ user, loading, checkAuth: async () => { await checkAuth(); }, setAuthToken, signout }}>
+      {loading ? (
+        <div className="flex h-screen items-center justify-center">
+          <div className="spinner">Loading...</div>
+        </div>
+      ) : (
+        children
+      )}
+    </AuthContext.Provider>
+  );
+}
+
+// Custom hook to use auth context
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}; 

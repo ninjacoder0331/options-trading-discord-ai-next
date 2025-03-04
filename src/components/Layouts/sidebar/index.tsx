@@ -6,40 +6,33 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { NAV_DATA } from "./data";
+import { NAV_DATA_2 } from "./traderData";
 import { ArrowLeftIcon, ChevronUp } from "./icons";
 import { MenuItem } from "./menu-item";
 import { useSidebarContext } from "./sidebar-context";
+import Cookies from "js-cookie";
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [SidebarData, setSidebarData] = useState<typeof NAV_DATA | typeof NAV_DATA_2>([]);
   const { setIsOpen, isOpen, isMobile, toggleSidebar } = useSidebarContext();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
   const toggleExpanded = (title: string) => {
     setExpandedItems((prev) => (prev.includes(title) ? [] : [title]));
 
-    // Uncomment the following line to enable multiple expanded items
-    // setExpandedItems((prev) =>
-    //   prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title],
-    // );
   };
+
 
   useEffect(() => {
     // Keep collapsible open, when it's subpage is active
-    NAV_DATA.some((section) => {
-      return section.items.some((item) => {
-        return item.items.some((subItem) => {
-          if (subItem.url === pathname) {
-            if (!expandedItems.includes(item.title)) {
-              toggleExpanded(item.title);
-            }
-
-            // Break the loop
-            return true;
-          }
-        });
-      });
-    });
+    const role = Cookies.get('role');
+    if(role === "trader"){
+      setSidebarData(NAV_DATA_2);
+    }
+    else{
+      setSidebarData(NAV_DATA);
+    }
   }, [pathname]);
 
   return (
@@ -87,7 +80,7 @@ export function Sidebar() {
 
           {/* Navigation */}
           <div className="custom-scrollbar mt-6 flex-1 overflow-y-auto pr-3 min-[850px]:mt-10">
-            {NAV_DATA.map((section) => (
+            {SidebarData.map((section) => (
               <div key={section.label} className="mb-6">
                 <h2 className="mb-5 text-sm font-medium text-dark-4 dark:text-dark-6">
                   {section.label}
@@ -146,8 +139,7 @@ export function Sidebar() {
                             const href =
                               "url" in item
                                 ? item.url + ""
-                                : "/" +
-                                  item.title.toLowerCase().split(" ").join("-");
+                                : "/"
 
                             return (
                               <MenuItem

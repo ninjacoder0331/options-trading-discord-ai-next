@@ -16,7 +16,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   checkAuth: () => Promise<void>;
-  setAuthToken: (token: string) => void;
+  setAuthToken: (token: string , role: string) => void;
   signout: () => Promise<void>;
 }
 
@@ -31,9 +31,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const setAuthToken = (token: string) => {
+  const setAuthToken = (token: string , role: string) => {
     // Set token in cookie (expires in 30 days)
     Cookies.set('authToken', token, { expires: 1, secure: true });
+    Cookies.set('role', role, { expires: 1, secure: true });
     // Update axios default headers
     apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   };
@@ -47,7 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(null);
         return false;
       }
-
+      return true
       // Set token in axios headers
       apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 

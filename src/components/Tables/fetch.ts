@@ -1,8 +1,22 @@
 import * as logos from "@/assets/logos";
 
+interface TraderData {
+  user: string;
+  login: string;
+  pw: string;
+  tradeAmt: number;
+  analyst1: string;
+  analyst2: string;
+  analyst3: string;
+  analyst4: string;
+  stopLoss: number;
+  profitTaking: number;
+  brokerageAccount: string;
+}
+
 export async function getTopProducts() {
   // Fake delay
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  // await new Promise((resolve) => setTimeout(resolve, 2000));
 
   return [
     {
@@ -42,7 +56,7 @@ export async function getTopProducts() {
 
 export async function getInvoiceTableData() {
   // Fake delay
-  await new Promise((resolve) => setTimeout(resolve, 1400));
+  // await new Promise((resolve) => setTimeout(resolve, 1400));
 
   return [
     {
@@ -74,7 +88,7 @@ export async function getInvoiceTableData() {
 
 export async function getTopChannels() {
   // Fake delay
-  await new Promise((resolve) => setTimeout(resolve, 1500));
+  // await new Promise((resolve) => setTimeout(resolve, 1500));
 
   return [
     {
@@ -116,6 +130,37 @@ export async function getTopChannels() {
       sales: 3456,
       conversion: 2.59,
       logo: logos.facebook,
+    },
+  ];
+}
+
+export async function getTraders() {
+  return [
+    {
+      user: "Tracy",
+      login: "Tdog",
+      pw: "Special123!",
+      tradeAmt: 2500,
+      analyst1: "Rodney",
+      analyst2: "Tommy",
+      analyst3: "Gunn",
+      analyst4: "Cyble",
+      stopLoss: 50,
+      profitTaking: 100,
+      brokerageAccount: ""
+    },
+    {
+      user: "Brad",
+      login: "BradPop",
+      pw: "TestPW123!",
+      tradeAmt: 5000,
+      analyst1: "Sam",
+      analyst2: "Johnny1",
+      analyst3: "Popper",
+      analyst4: "",
+      stopLoss: 70,
+      profitTaking: 150,
+      brokerageAccount: ""
     },
   ];
 }

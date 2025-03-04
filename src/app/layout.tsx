@@ -14,6 +14,7 @@ import { AuthProvider } from '@/providers/AuthProvider';
 import { Sidebar } from "@/components/Layouts/sidebar";
 import { useState , useEffect } from "react";
 import { usePathname , useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 // import "flatpickr/dist/flatpickr.min.css";
 // import "jsvectormap/dist/jsvectormap.css";
 
@@ -28,7 +29,7 @@ export default function RootLayout({
 }) {
   const [token, setToken] = useState<string | null>(null);
   const pathname = usePathname();
-
+  const router = useRouter();
   useEffect(() => {
     const token = document.cookie
       .split('; ')
@@ -37,6 +38,17 @@ export default function RootLayout({
       
     if (token) {
       setToken(token);
+      const role = Cookies.get('role');
+      if(role === "trader"){
+        router.push("/traderDashboard");
+      }
+    }
+
+    if(pathname === "/logout"){
+      setToken(null);
+      Cookies.remove('authToken');
+      Cookies.remove('role');
+      router.push("/");
     }
   }, [pathname]);
 
@@ -44,7 +56,7 @@ export default function RootLayout({
     <html suppressHydrationWarning lang="en">
       <head />
 
-      <body className={`bg-[#FCFCFC] dark:bg-black ${inter.className}`}>
+      <body className={`bg-[#f7f6f6] dark:bg-black ${inter.className}`}>
         <Providers>
           <AuthProvider>
             {!token ? (
@@ -72,7 +84,7 @@ export default function RootLayout({
                 <div className="w-full bg-gray-2 dark:bg-[#020d1a]">
                   <HeaderDashboard />
                   <main className="isolate mx-auto w-full max-w-screen-2xl overflow-hidden p-4 md:p-6 2xl:p-10">
-            
+                    {children}
                   </main>
                 </div>
               </div>

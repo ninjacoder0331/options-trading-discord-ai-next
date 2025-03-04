@@ -25,11 +25,11 @@ export default function SigninWithPassword() {
     e.preventDefault();
 
     // You can remove this code block
-    setLoading(true);
+    // setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    // setTimeout(() => {
+    //   setLoading(false);
+    // }, 1000);
   };
 
   return (

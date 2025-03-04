@@ -30,10 +30,13 @@ const SigninPage = () => {
         email,
         password,
       });
+      
       toast.success("Successfully signed in!");
-      setAuthToken(response.authToken);
+      // console.log(response.user.role);
+      setAuthToken(response.authToken , response.user.role);
+
       // Check auth status after successful signin
-      await checkAuth();
+      // await checkAuth();
       
       await setTimeout(() => {
         window.location.href = '/';

@@ -58,6 +58,7 @@ export default function RootLayout({
 
       <body className={`bg-[#f7f6f6] dark:bg-black ${inter.className}`}>
         <Providers>
+          <ToastContainer />
           <AuthProvider>
             {!token ? (
               <div>

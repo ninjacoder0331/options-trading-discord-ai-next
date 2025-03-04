@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import apiClient from '@/lib/axios';
-
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 interface Brokerage {
-  id: string;
+  _id: string;
   brokerageName: string;
   brokerage: string;
   loginName: string;
@@ -14,12 +15,18 @@ interface Brokerage {
   apiLink: string;
 }
 
-const BrokerageTable = () => {
-  const handleDelete = async (id: string) => {
+const BrokerageTable = ({ data , setIsLoaded }: { data: Brokerage[] , setIsLoaded: (isLoaded: boolean) => void }) => {
+  const router = useRouter();
+  const handleDelete = async (brokerage: string) => {
     try {
-      await apiClient.delete(`/api/brokerage/${id}`);
+      console.log("brokerage id", brokerage);
+      await apiClient.post("/api/brokerage/deleteBrokerage", {brokerageId: brokerage});
+      toast.success("Brokerage deleted successfully");
+      // setIsLoaded(true);
+      window.location.reload();
       // Refresh table data after deletion
     } catch (error) {
+      toast.error("Error deleting brokerage");
       console.error('Error deleting brokerage:', error);
     }
   };
@@ -55,74 +62,28 @@ const BrokerageTable = () => {
         </tr>
       </thead>
       <tbody>
-        <tr className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">TS1</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Tradestation</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">MW123@!</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">MWLoginPW</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">58934852935</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"></td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"></td>
-          <td className="px-4 py-3">
-            <button
-              onClick={() => handleDelete('ts1-id')}
-              className="rounded-lg bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500/50"
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
-        <tr className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">TS2</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Tradestation</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">MW123!</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">MWLoginPW</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">127417821</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"></td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"></td>
-          <td className="px-4 py-3">
-            <button
-              onClick={() => handleDelete('ts2-id')}
-              className="rounded-lg bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500/50"
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
-        <tr className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Tradier1</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Tradier</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">MWTR321</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">MWTradierPW</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">096489068923</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"></td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"></td>
-          <td className="px-4 py-3">
-            <button
-              onClick={() => handleDelete('tradier1-id')}
-              className="rounded-lg bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500/50"
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
-        <tr className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">TT1</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Tasty Trade</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">MW123!!!</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">TTMWPW123!</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">92319853</td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"></td>
-          <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"></td>
-          <td className="px-4 py-3">
-            <button
-              onClick={() => handleDelete('tt1-id')}
-              className="rounded-lg bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500/50"
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
+        {
+          data.map((brokerage , index) => (
+          <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
+            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{brokerage.brokerageName}</td>
+            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{brokerage.brokerage}</td>
+            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{brokerage.loginName}</td>
+            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{brokerage.password}</td>
+            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{brokerage.accountNumber}</td>
+            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{brokerage.apiInfo}</td>
+            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{brokerage.apiLink}</td>
+            <td className="px-4 py-3">
+              <button
+                onClick={() => handleDelete(brokerage._id)}
+                className="rounded-lg bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500/50"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+          ))
+        }
+        
       </tbody>
     </table>
   );

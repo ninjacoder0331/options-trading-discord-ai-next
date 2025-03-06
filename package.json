@@ -24,7 +24,9 @@
     "react-dom": "19.0.0",
     "react-modal-video": "^2.0.1",
     "react-toastify": "^11.0.5",
-    "tailwind-merge": "^3.0.2"
+    "request": "^2.88.2",
+    "tailwind-merge": "^3.0.2",
+    "tradestation-api-ts": "^1.1.1"
   },
   "devDependencies": {
     "@types/node": "^20.8.9",

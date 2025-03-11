@@ -37,8 +37,10 @@ export default function RootLayout({
       ?.split('=')[1];
       
     if (token) {
+      
       setToken(token);
       const role = Cookies.get('role');
+      console.log("token", role);
       if(role === "trader"){
         router.push("/traderDashboard");
       }

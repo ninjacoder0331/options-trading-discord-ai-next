@@ -1,10 +1,103 @@
 import { ShowcaseSection } from "../Layouts/showcase-section";
 import InputGroup from "../FormElements/InputGroup";
 import { useState } from "react";
+import OptionsChainModal from "./OptionsChainModal";
+import { toast } from "react-toastify";
 
-const Analyst = ({analyst, setSymbol, setDate, setStrikePrice, setOptionType, optionType, handleSymbol}) => {
+const Analyst = ({analyst}) => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-  const [childType , setChildType] = useState("CALL");  
+  const [childType , setChildType] = useState("call");
+  const [symbol, setSymbol] = useState("");
+  const [date, setDate] = useState("");
+  const [strikePrice, setStrikePrice] = useState("");
+  const [optionType, setOptionType] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [optionsData, setOptionsData] = useState(null);
+  const [contractData, setContractData] = useState(null);
+
+  const mergeOptionsData = (optionsData: any, contractData: any) => {
+    const mergedArray = [];
+
+
+    // Check if both data structures exist
+    if (optionsData?.snapshots && contractData?.option_contracts) {
+      Object.entries(optionsData.snapshots).forEach(([key, snapshot]: [string, any]) => {
+        // Find matching contract in contractData.option_contracts array
+        const matchingContract = contractData.option_contracts.find((contract: any) => 
+          contract.symbol === key
+        );
+
+        if (matchingContract) {
+          mergedArray.push({
+            symbol: key,
+            bidPrice: snapshot.latestQuote?.bp,
+            askPrice: snapshot.latestQuote?.ap,
+            lastPrice: snapshot.greek?.last_price,
+            volume: snapshot.latestQuote?.volume,
+            // Add contract data
+            ...matchingContract,
+          });
+        }
+      });
+    }
+
+    // Debug logs
+    // console.log("Options Data Snapshots:", Object.keys(optionsData?.snapshots || {}));
+    // console.log("Contract Data Sample:", contractData?.option_contracts?.slice(0, 3));
+    // console.log("Merged Array:", mergedArray);
+
+    return mergedArray;
+  };
+
+  const optionsChainForm = async() => {
+    try {
+
+      console.log("symbol", symbol);
+      console.log("date", date);
+      console.log("optionType", optionType);
+
+      if(symbol === ""){
+        toast.error("Please enter a symbol");
+        return;
+      }
+      if(date === ""){
+        toast.error("Please enter a date");
+        return;
+      }
+      if(optionType === ""){
+        toast.error("Please enter an option type");
+        return;
+      }
+      const apiKey = process.env.NEXT_PUBLIC_ALPACA_API_KEY;
+      const secretKey = process.env.NEXT_PUBLIC_ALPACA_SECRET_KEY;
+
+      const headers = {
+        "accept": "application/json",
+        'APCA-API-KEY-ID': apiKey,
+        'APCA-API-SECRET-KEY': secretKey
+      }
+
+      const chain_baseUrl = `https://data.alpaca.markets/v1beta1/options/snapshots/${symbol}?limit=1000&type=${optionType}&expiration_date=${date}`
+      const contract_baseUrl = `https://paper-api.alpaca.markets/v2/options/contracts?underlying_symbols=${symbol}&status=active&expiration_date=${date}&type=${optionType}&limit=10000`
+      
+      const response = await fetch(chain_baseUrl, { headers });
+      const data = await response.json();
+      console.log("Fetched data:", data);
+
+      const response2 = await fetch(contract_baseUrl, { headers });
+      const data2 = await response2.json();
+      console.log("Contract data:", data2);
+      setContractData(data2);
+
+      const mergedData = mergeOptionsData(data, data2);
+      console.log("Merged data:", mergedData);
+
+      setOptionsData({ snapshots: mergedData });
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error('Error fetching options data:', error);
+    }
+  }
 
   return (
     <div className="space-y-4">
@@ -42,12 +135,12 @@ const Analyst = ({analyst, setSymbol, setDate, setStrikePrice, setOptionType, op
       </div>
       <div className="flex gap-3">
         <button 
-          onClick={() => {setOptionType("CALL"); setChildType("CALL")}}
+          onClick={() => {setOptionType("call"); setChildType("call")}}
           className="flex-1 px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors">
           CALL
         </button>
         <button
-          onClick={() => {setOptionType("PUT"); setChildType("PUT")}}
+          onClick={() => {setOptionType("put"); setChildType("put")}}
           className="flex-1 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800 transition-colors">
           PUT
         </button>
@@ -62,7 +155,7 @@ const Analyst = ({analyst, setSymbol, setDate, setStrikePrice, setOptionType, op
       <input
         type="date"
         value={selectedDate}
-        onChange={(e) => {setDate(e.target.value); setSelectedDate(e.target.value)}}
+        onChange={(e) => {setDate(e.target.value); setSelectedDate(e.target.value); optionsChainForm();}}
         className="w-full px-4 py-2 text-left rounded-lg border border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 dark:bg-gray-900 dark:text-white transition-colors focus:outline-none focus:border-primary"
       />
     </div>
@@ -79,11 +172,27 @@ const Analyst = ({analyst, setSymbol, setDate, setStrikePrice, setOptionType, op
 
     <div>
       <button
-        onClick={handleSymbol} 
+        // onClick={handleSymbol} 
         className="w-full  px-4 py-2 text-left rounded-lg border border-gray-300 hover:bg-red-500 hover:text-white dark:border-gray-700 dark:hover:bg-red-500 transition-colors">
         Submit
       </button>
     </div>
+
+    <div>
+      <button
+        onClick={optionsChainForm}
+        className="rounded-lg bg-primary px-4 py-2 text-white hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50"
+      >
+        View Options Chain
+      </button>
+    </div>
+
+    <OptionsChainModal 
+      isOpen={isModalOpen}
+      onClose={() => setIsModalOpen(false)}
+      data={optionsData}
+      contractData={contractData}
+    />
   </div>
   )
 }

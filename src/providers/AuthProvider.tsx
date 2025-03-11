@@ -33,6 +33,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const setAuthToken = (token: string , role: string) => {
     // Set token in cookie (expires in 30 days)
+    console.log("token", token);
+    console.log("role", role);
     Cookies.set('authToken', token, { expires: 1, secure: true });
     Cookies.set('role', role, { expires: 1, secure: true });
     // Update axios default headers

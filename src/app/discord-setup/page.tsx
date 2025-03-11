@@ -40,7 +40,7 @@ export default function DiscordSetup() {
 
   useEffect(() => {
     getBrokerages();
-  })
+  }, [])
 
   if(isLoading){
     return <div>Loading...</div>
@@ -71,6 +71,13 @@ export default function DiscordSetup() {
               <td className="px-6 py-4">
                 <select className="w-full rounded-lg border border-gray-300 px-4 py-2 outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                   <option value="">Select Brokerage</option>
+                  {brokerage.map((item: any , index: number) => (
+                    <option key={index} className="text-sm text-gray-700 dark:text-gray-300" value={item.id}>
+                        {item.brokerage}
+                    </option>
+                  ))}
+
+                  
                   {/* Add your brokerage options here */}
                 </select>
               </td>

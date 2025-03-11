@@ -1,7 +1,7 @@
 
 import React from "react"
 
-const OpenPosition = () => {
+const OpenPosition = ({openPositions}) => {
     return (
         <div className="overflow-x-auto">
           <table className="w-full table-auto border-collapse">
@@ -75,6 +75,36 @@ const OpenPosition = () => {
                 </td>
               </tr>
               {/* Add more rows as needed */}
+              {
+                openPositions.map((position , key) => (
+                  <tr className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800" key={key}>
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.symbol}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.date}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.analyst}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.entry}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.currentPrice}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.timeInForce}</td>   
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.profitPerContract}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.roi}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.positionsOpen}</td>
+                    <td className="px-4 py-3 text-center">
+                      <button className="rounded-lg bg-red-500 px-3 py-1 text-xs text-white hover:bg-red-600">
+                        Sell 1/3
+                      </button>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <button className="rounded-lg bg-orange-500 px-3 py-1 text-xs text-white hover:bg-orange-600">
+                        Sell Half
+                      </button>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <button className="rounded-lg bg-red-600 px-3 py-1 text-xs text-white hover:bg-red-700">
+                        Sell All
+                      </button>
+                    </td>                 
+                      </tr>
+                ))
+              }
             </tbody>
           </table>
         </div>

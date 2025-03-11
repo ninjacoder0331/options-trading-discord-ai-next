@@ -3,6 +3,16 @@ import InputGroup from "../FormElements/InputGroup";
 import { useState } from "react";
 import OptionsChainModal from "./OptionsChainModal";
 import { toast } from "react-toastify";
+import apiClient from "@/lib/axios";
+
+const apiKey = process.env.NEXT_PUBLIC_ALPACA_API_KEY;
+const secretKey = process.env.NEXT_PUBLIC_ALPACA_SECRET_KEY;
+
+const headers = {
+  "accept": "application/json",
+  'APCA-API-KEY-ID': apiKey,
+  'APCA-API-SECRET-KEY': secretKey
+}
 
 const Analyst = ({analyst}) => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
@@ -14,6 +24,7 @@ const Analyst = ({analyst}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [optionsData, setOptionsData] = useState(null);
   const [contractData, setContractData] = useState(null);
+  const [orderSymbol, setOrderSymbol] = useState("");
 
   const mergeOptionsData = (optionsData: any, contractData: any) => {
     const mergedArray = [];
@@ -73,14 +84,7 @@ const Analyst = ({analyst}) => {
         toast.error("Please enter an option type");
         return;
       }
-      const apiKey = process.env.NEXT_PUBLIC_ALPACA_API_KEY;
-      const secretKey = process.env.NEXT_PUBLIC_ALPACA_SECRET_KEY;
-
-      const headers = {
-        "accept": "application/json",
-        'APCA-API-KEY-ID': apiKey,
-        'APCA-API-SECRET-KEY': secretKey
-      }
+      
 
       const chain_baseUrl = `https://data.alpaca.markets/v1beta1/options/snapshots/${symbol}?limit=1000&type=${optionType}&expiration_date=${date}`
       const contract_baseUrl = `https://paper-api.alpaca.markets/v2/options/contracts?underlying_symbols=${symbol}&status=active&expiration_date=${date}&type=${optionType}&limit=10000`
@@ -102,6 +106,52 @@ const Analyst = ({analyst}) => {
     } catch (error) {
       console.error('Error fetching options data:', error);
     }
+  }
+
+  const buyOrder = async () => {
+    if(strikePrice === ""){
+      toast.error("Please select a strike price");
+      return;
+    }
+
+    const optionsOrder = {
+      method: 'POST',
+      headers: {accept: 'application/json', 'content-type': 'application/json'},
+      body: JSON.stringify({type: 'market', time_in_force: 'day', symbol: orderSymbol, qty: '1', side: optionType === "call" ? "buy" : "sell"})
+    };
+    
+    // fetch('https://paper-api.alpaca.markets/v2/orders', optionsOrder)
+    //   .then(res => res.json())
+    //   .then(res => {
+    //     console.log(res);
+    //     toast.success("Order placed successfully");
+
+    //   })
+    //   .catch(err => {
+    //     console.error(err); 
+    //     toast.error("Error placing order");
+    //   });
+
+    const payload = {
+      orderSymbol : orderSymbol,
+      symbol : symbol,
+      quantity : 1,
+      analyst : analyst.name,
+      side : optionType === "call" ? "buy" : "sell",
+      orderType : "market",
+      timeInForce : "day",
+      date : selectedDate
+    }
+
+
+    const result = apiClient.post("/api/trader/addPosition", payload).then(res => {
+      toast.success("Order placed successfully");
+      console.log("result", res);
+    }).catch(err => {
+      toast.error("Error placing order");
+      console.error("error", err);
+    })
+
   }
 
   return (
@@ -170,9 +220,23 @@ const Analyst = ({analyst}) => {
       <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
         Strike Price
       </label>
-      <button className="w-full px-4 py-2 text-left rounded-lg border border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 transition-colors">
-        Select price
-      </button>
+      <input
+        value={strikePrice}
+        readOnly
+        className="w-full px-4 py-2 text-left rounded-lg 
+          border border-gray-300 
+          bg-gray-50 
+          cursor-not-allowed 
+          text-gray-700
+          dark:bg-gray-700 
+          dark:border-gray-600 
+          dark:text-gray-300
+          focus:outline-none
+          focus:ring-2
+          focus:ring-primary/50
+          dark:focus:ring-primary/30
+          transition-all duration-200"
+      />
     </div>
 
     {/* <div>
@@ -183,12 +247,18 @@ const Analyst = ({analyst}) => {
       </button>
     </div> */}
 
-    <div>
+    <div className="flex flex-col gap-2">
       <button
         onClick={optionsChainForm}
         className="rounded-lg bg-primary px-4 py-2 text-white hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50"
       >
         View Options Chain
+      </button>
+      <button
+        onClick={buyOrder}
+        className="rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-rose-500 focus:outline-none focus:ring-2 focus:ring-primary/50"
+      >
+        Buy Order
       </button>
     </div>
 
@@ -200,6 +270,8 @@ const Analyst = ({analyst}) => {
       symbol={symbol}
       date={date}
       optionType={optionType}
+      setStrikePrice={setStrikePrice}
+      setOrderSymbol={setOrderSymbol}
     />
   </div>
   )

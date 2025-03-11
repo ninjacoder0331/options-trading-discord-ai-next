@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 const TraderDashboard = () => {
 
   const [analysts, setAnalysts] = useState([]);
+  const [openPositions, setOpenPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // function
@@ -42,10 +43,11 @@ const TraderDashboard = () => {
   // Method 1: Using .then()
   useEffect(() => {
     setIsLoading(true);
-    apiClient.get('/api/trader/getAnalysts')
+    apiClient.get('/api/trader/getTraderData')
     .then(response => {
       // Handle success
-      setAnalysts(response.data);
+      setAnalysts(response.data.analysts);
+      setOpenPositions(response.data.positions);
       setIsLoading(false);
       // console.log(response.data);
       
@@ -78,7 +80,7 @@ const TraderDashboard = () => {
       </div>
       
       <div className="rounded-lg bg-white p-6 shadow-1 dark:bg-gray-dark" key={2}>
-        <OpenPosition/>
+        <OpenPosition openPositions={openPositions} />
       </div>
 
       <div className="flex flex-row justify-between gap-5" key={3}>

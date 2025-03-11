@@ -1,5 +1,19 @@
-
 import React from "react"
+
+const getMinutesDifference = (createdAt: string) => {
+  try {
+    
+    const created = new Date(createdAt);
+    const now = new Date();
+    // console.log("created", created);
+    // console.log("now", now);
+    const diffInMs = now.getTime() - created.getTime();
+    const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+    return `${diffInMinutes} min`;
+  } catch (error) {
+    return '0 min';
+  }
+};
 
 const OpenPosition = ({openPositions}) => {
     return (
@@ -83,7 +97,9 @@ const OpenPosition = ({openPositions}) => {
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.analyst}</td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.entry}</td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.currentPrice}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.timeInForce}</td>   
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+                      {getMinutesDifference(position.created_at)}
+                    </td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.profitPerContract}</td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.roi}</td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.positionsOpen}</td>
@@ -102,7 +118,7 @@ const OpenPosition = ({openPositions}) => {
                         Sell All
                       </button>
                     </td>                 
-                      </tr>
+                  </tr>
                 ))
               }
             </tbody>

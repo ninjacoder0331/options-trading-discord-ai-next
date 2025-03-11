@@ -87,7 +87,6 @@ const TraderDashboard = () => {
         <ClosePosition/>
         <Anlystics/>
       </div>
-
     </div>
   )
 }

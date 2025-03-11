@@ -8,9 +8,9 @@ const Analyst = ({analyst}) => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [childType , setChildType] = useState("call");
   const [symbol, setSymbol] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [strikePrice, setStrikePrice] = useState("");
-  const [optionType, setOptionType] = useState("");
+  const [optionType, setOptionType] = useState("call");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [optionsData, setOptionsData] = useState(null);
   const [contractData, setContractData] = useState(null);
@@ -34,6 +34,11 @@ const Analyst = ({analyst}) => {
             askPrice: snapshot.latestQuote?.ap,
             lastPrice: snapshot.greek?.last_price,
             volume: snapshot.latestQuote?.volume,
+            delta : snapshot.greeks?.delta,
+            gamma : snapshot.greeks?.gamma,
+            theta : snapshot.greeks?.theta,
+            vega : snapshot.greeks?.vega,
+            
             // Add contract data
             ...matchingContract,
           });
@@ -155,7 +160,7 @@ const Analyst = ({analyst}) => {
       <input
         type="date"
         value={selectedDate}
-        onChange={(e) => {setDate(e.target.value); setSelectedDate(e.target.value); optionsChainForm();}}
+        onChange={(e) => {setDate(e.target.value); setSelectedDate(e.target.value);}}
         className="w-full px-4 py-2 text-left rounded-lg border border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 dark:bg-gray-900 dark:text-white transition-colors focus:outline-none focus:border-primary"
       />
     </div>
@@ -170,13 +175,13 @@ const Analyst = ({analyst}) => {
       </button>
     </div>
 
-    <div>
+    {/* <div>
       <button
-        // onClick={handleSymbol} 
+        onClick={optionsChainForm} 
         className="w-full  px-4 py-2 text-left rounded-lg border border-gray-300 hover:bg-red-500 hover:text-white dark:border-gray-700 dark:hover:bg-red-500 transition-colors">
         Submit
       </button>
-    </div>
+    </div> */}
 
     <div>
       <button
@@ -192,6 +197,9 @@ const Analyst = ({analyst}) => {
       onClose={() => setIsModalOpen(false)}
       data={optionsData}
       contractData={contractData}
+      symbol={symbol}
+      date={date}
+      optionType={optionType}
     />
   </div>
   )

@@ -5,9 +5,12 @@ interface OptionsChainModalProps {
   onClose: () => void;
   data: any;
   contractData: any;
+  symbol: string;
+  date: string;
+  optionType: string;
 }
 
-const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, contractData }) => {
+const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, contractData, symbol, date, optionType }) => {
   if (!isOpen) return null;
 
   console.log("Modal Data:", data); // Add this to debug
@@ -26,7 +29,7 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
         <div className="border-b border-gray-200 p-4 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              Options Chain Data
+              Options Chain Data  : "{symbol}" , "{date}" , "{optionType}"
             </h2>
             <button
               onClick={onClose}
@@ -55,7 +58,7 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
                     Ask Price
                   </th>
                   <th className="border-b border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
-                    Last Price
+                    Delta
                   </th>
                   <th className="border-b border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
                     Size
@@ -89,7 +92,7 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
                         {quote.askPrice || '-'}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                        {quote.lastPrice || '-'}
+                        {quote.delta || '-'}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
                         {quote.size || '-'}

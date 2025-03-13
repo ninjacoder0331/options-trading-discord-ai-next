@@ -1,6 +1,6 @@
 import React from "react"
 
-const ClosePosition = () => {
+const ClosePosition = ({closePositions}) => {
     return (
         <div className="overflow-x-auto rounded-lg bg-white p-6 shadow-1 dark:bg-gray-dark w-full" >
           <table className="w-full table-auto border-collapse">
@@ -35,27 +35,26 @@ const ClosePosition = () => {
                 <td className="px-4 py-3 text-sm text-green-600 dark:text-green-400">68%</td>
                 <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Tommy</td>
               </tr>
-              <tr className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">ORCL</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">$2.00</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">$3.00</td>
-                <td className="px-4 py-3 text-sm text-green-600 dark:text-green-400">$1.00</td>
-                <td className="px-4 py-3 text-sm text-green-600 dark:text-green-400">50%</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Johnny</td>
-              </tr>
-              <tr className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">NVDA</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">$0.60</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">$1.20</td>
-                <td className="px-4 py-3 text-sm text-green-600 dark:text-green-400">$0.60</td>
-                <td className="px-4 py-3 text-sm text-green-600 dark:text-green-400">200%</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">WiseGuy</td>
-              </tr>
-              <tr className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-                <td className="px-4 py-3 text-sm italic text-gray-500" colSpan={6}>
-                  Keeps on going...
-                </td>
-              </tr>
+                {
+                  closePositions.map((position , index) => (
+                    <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
+                      <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.symbol}</td>
+                      <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.entryPrice}</td>
+                      <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.closePrice}</td>
+                      <td className={`px-4 py-3 text-sm ${(position.closePrice - position.entryPrice) >= 0 
+                        ? 'text-green-600 dark:text-green-400' 
+                        : 'text-red-600 dark:text-red-400'}`}>
+                        {(position.closePrice - position.entryPrice).toFixed(2)}
+                      </td>
+                      <td className={`px-4 py-3 text-sm ${(position.closePrice - position.entryPrice) >= 0 
+                        ? 'text-green-600 dark:text-green-400' 
+                        : 'text-red-600 dark:text-red-400'}`}>
+                        {((position.closePrice - position.entryPrice) / position.entryPrice * 100).toFixed(2)}%
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.analyst}</td>
+                    </tr>
+                  ))
+                }
             </tbody>
           </table>
         </div>

@@ -14,7 +14,7 @@ const headers = {
   'APCA-API-SECRET-KEY': secretKey
 }
 
-const Analyst = ({analyst}) => {
+const Analyst = ({analyst , getOpenPositions}) => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [childType , setChildType] = useState("call");
   const [symbol, setSymbol] = useState("");
@@ -25,6 +25,7 @@ const Analyst = ({analyst}) => {
   const [optionsData, setOptionsData] = useState(null);
   const [contractData, setContractData] = useState(null);
   const [orderSymbol, setOrderSymbol] = useState("");
+  const [entryPrice , setEntryPrice] = useState("");
 
   const mergeOptionsData = (optionsData: any, contractData: any) => {
     const mergedArray = [];
@@ -86,7 +87,7 @@ const Analyst = ({analyst}) => {
       }
       
 
-      const chain_baseUrl = `https://data.alpaca.markets/v1beta1/options/snapshots/${symbol}?limit=1000&type=${optionType}&expiration_date=${date}`
+      const chain_baseUrl = `https://data.alpaca.markets/v1beta1/options/snapshots/${symbol}?feed=indicative&limit=1000&type=${optionType}&expiration_date=${date}`
       const contract_baseUrl = `https://paper-api.alpaca.markets/v2/options/contracts?underlying_symbols=${symbol}&status=active&expiration_date=${date}&type=${optionType}&limit=10000`
       
       const response = await fetch(chain_baseUrl, { headers });
@@ -113,24 +114,10 @@ const Analyst = ({analyst}) => {
       toast.error("Please select a strike price");
       return;
     }
-
-    const optionsOrder = {
-      method: 'POST',
-      headers: {accept: 'application/json', 'content-type': 'application/json'},
-      body: JSON.stringify({type: 'market', time_in_force: 'day', symbol: orderSymbol, qty: '1', side: optionType === "call" ? "buy" : "sell"})
-    };
-    
-    // fetch('https://paper-api.alpaca.markets/v2/orders', optionsOrder)
-    //   .then(res => res.json())
-    //   .then(res => {
-    //     console.log(res);
-    //     toast.success("Order placed successfully");
-
-    //   })
-    //   .catch(err => {
-    //     console.error(err); 
-    //     toast.error("Error placing order");
-    //   });
+    if(entryPrice === ""){
+      toast.error("Please check again the bid price");
+      return;
+    }
 
     const payload = {
       orderSymbol : orderSymbol,
@@ -140,12 +127,16 @@ const Analyst = ({analyst}) => {
       side : optionType === "call" ? "buy" : "sell",
       orderType : "market",
       timeInForce : "day",
-      date : selectedDate
+      date : selectedDate,
+      entryPrice : entryPrice
     }
+
+    console.log("payload", payload);
 
 
     const result = apiClient.post("/api/trader/addPosition", payload).then(res => {
       toast.success("Order placed successfully");
+      getOpenPositions();
       console.log("result", res);
     }).catch(err => {
       toast.error("Error placing order");
@@ -163,9 +154,9 @@ const Analyst = ({analyst}) => {
       </label>
       <input 
         type="text"
-        onChange={(e) => setSymbol(e.target.value)}
+        onChange={(e) => setSymbol(e.target.value.toUpperCase())}
         placeholder="Enter ticker"
-        className="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+        className="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white uppercase"
       />
     </div>
 
@@ -272,6 +263,7 @@ const Analyst = ({analyst}) => {
       optionType={optionType}
       setStrikePrice={setStrikePrice}
       setOrderSymbol={setOrderSymbol}
+      setEntryPrice = {setEntryPrice}
     />
   </div>
   )

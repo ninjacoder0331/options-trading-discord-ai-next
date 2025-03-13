@@ -1,4 +1,6 @@
-import React from "react"
+import apiClient from "@/lib/axios";
+import React, { useState } from "react"
+import { toast } from "react-toastify";
 
 const getMinutesDifference = (createdAt: string) => {
   try {
@@ -15,7 +17,23 @@ const getMinutesDifference = (createdAt: string) => {
   }
 };
 
-const OpenPosition = ({openPositions}) => {
+const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) => {
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [pendingSellId, setPendingSellId] = useState(null);
+
+  const sellAll = (id) => {
+    const payload = {
+      id : id
+    }
+    const result = apiClient.post("/api/trader/sellAll", payload).then(res => {
+      getOpenPositions();
+      getClosePositions();
+      toast.success("All positions sold successfully");
+    }).catch(err => {
+      console.log("err", err);
+      toast.error("Error selling all positions");
+    })
+  }
     return (
         <div className="overflow-x-auto">
           <table className="w-full table-auto border-collapse">
@@ -60,7 +78,7 @@ const OpenPosition = ({openPositions}) => {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
+              {/* <tr className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
                 <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">AAPL</td>
                 <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                   C Feb 5 $223
@@ -87,21 +105,29 @@ const OpenPosition = ({openPositions}) => {
                     Sell All
                   </button>
                 </td>
-              </tr>
+              </tr> */}
               {/* Add more rows as needed */}
               {
                 openPositions.map((position , key) => (
-                  <tr className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800" key={key}>
+                  <tr className="border-b border-gray-200 text-center hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800" key={key}>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.symbol}</td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.date}</td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.analyst}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.entry}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.entryPrice}</td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.currentPrice}</td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                       {getMinutesDifference(position.created_at)}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.profitPerContract}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.roi}</td>
+                    <td className={`px-4 py-3 text-sm ${(position.currentPrice - position.entryPrice) >= 0 
+                      ? 'text-green-600 dark:text-green-400' 
+                      : 'text-red-600 dark:text-red-400'}`}>
+                      {(position.currentPrice - position.entryPrice).toFixed(2)}
+                    </td>
+                    <td className={`px-4 py-3 text-sm ${(position.currentPrice - position.entryPrice) >= 0 
+                      ? 'text-green-600 dark:text-green-400' 
+                      : 'text-red-600 dark:text-red-400'}`}>
+                      {(((position.currentPrice - position.entryPrice) / position.entryPrice) * 100).toFixed(2)}%
+                    </td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.positionsOpen}</td>
                     <td className="px-4 py-3 text-center">
                       <button className="rounded-lg bg-red-500 px-3 py-1 text-xs text-white hover:bg-red-600">
@@ -114,9 +140,41 @@ const OpenPosition = ({openPositions}) => {
                       </button>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <button className="rounded-lg bg-red-600 px-3 py-1 text-xs text-white hover:bg-red-700">
-                        Sell All
-                      </button>
+                      <>
+                        <button 
+                          onClick={() => {
+                            setShowConfirm(true);
+                            setPendingSellId(position._id);
+                          }}
+                          className="rounded-lg bg-red-600 px-3 py-1 text-xs text-white hover:bg-red-700">
+                          Sell All
+                        </button>
+
+                        {showConfirm && (
+                          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+                              <p className="text-gray-700 dark:text-gray-300 mb-4">Are you sure you want to sell all positions?</p>
+                              <div className="flex justify-end gap-2">
+                                <button
+                                  onClick={() => {
+                                    sellAll(pendingSellId);
+                                    setShowConfirm(false);
+                                  }}
+                                  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                                >
+                                  OK
+                                </button>
+                                <button
+                                  onClick={() => setShowConfirm(false)}
+                                  className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </>
                     </td>                 
                   </tr>
                 ))

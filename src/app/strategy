@@ -1,0 +1,70 @@
+//@version=6
+strategy("TMO Triple Slope w/ HTF Filter", overlay=false, default_qty_type=strategy.percent_of_equity, default_qty_value=100)
+
+// Current Timeframe Inputs
+length = input.int(14, title="TMO Length")
+smoothK = input.int(5, title="Signal Line Smoothing")
+smoothD = input.int(3, title="TMO Smoothing")
+lookback = input.int(5, title="Slope Lookback Period")
+
+// Higher Timeframe (HTF) Inputs
+htf = input.timeframe("D", title="Higher Timeframe")
+htfMultiplier = input.int(1, title="HTF Multiplier (e.g., 1H to 1D = 8)")
+
+htfLength = length * htfMultiplier
+htfSmoothK = smoothK * htfMultiplier
+htfSmoothD = smoothD * htfMultiplier
+
+// Current TMO Calculation
+change = close - close[1]
+gain = ta.rma(math.max(change, 0), length)
+loss = ta.rma(-math.min(change, 0), length)
+rsi = (gain / (gain + loss)) * 100
+
+tmoline = ta.ema(rsi - 50, smoothD)
+signal = ta.ema(tmoline, smoothK)
+
+difference = tmoline - signal
+
+// Triple slope calculation
+slope1 = difference - difference[lookback]
+slope2 = slope1 - slope1[lookback]
+slope3 = slope2 - slope2[lookback]
+
+// Higher Timeframe TMO Calculation
+htfClose = request.security(syminfo.tickerid, htf, close, lookahead=barmerge.lookahead_on)
+htfChange = htfClose - request.security(syminfo.tickerid, htf, close[1], lookahead=barmerge.lookahead_on)
+htfGain = ta.rma(math.max(htfChange, 0), htfLength)
+htfLoss = ta.rma(-math.min(htfChange, 0), htfLength)
+htfRSI = (htfGain / (htfGain + htfLoss)) * 100
+
+htfTmoline = ta.ema(htfRSI - 50, htfSmoothD)
+htfSignal = ta.ema(htfTmoline, htfSmoothK)
+
+// Higher timeframe bullish condition
+htfBullish = htfTmoline > htfSignal
+
+// Strategy Entry and Exit Conditions with HTF filter
+longCondition = ta.crossover(slope3, 0) and htfBullish
+exitCondition = ta.crossunder(slope3, 0)
+
+total_amount = 25000
+uani = math.floor((total_amount /2) / close)
+
+var inPosition = false  // Track if we're in a position
+
+if longCondition and not inPosition
+    strategy.entry("Long", strategy.long)
+    inPosition := true
+    alert("{\n" +"    \"message\": \"buyOrder\\nsymbol : " + syminfo.ticker + "\\nprice : " + str.tostring(close) + "\\nquantity : " + str.tostring(uani) + "\"\n}" , alert.freq_all)
+
+if exitCondition and inPosition
+    strategy.close("Long")
+    inPosition := false
+    alert("{\n" +"    \"message\": \"sellOrder\\nsymbol : " + syminfo.ticker + "\\nprice : " + str.tostring(close) + "\\nquantity : " + str.tostring(uani) + "\"\n}" , alert.freq_all)
+
+// Plot Indicators
+hline(0, "Zero Line", color=color.gray, linewidth=2)
+plot(slope3, color=slope3 > 0 ? color.green : color.red, linewidth=2, title="TMO Triple Slope Indicator")
+plot(htfTmoline, color=color.blue, linewidth=2, title="HTF TMO Main Line")
+plot(htfSignal, color=color.orange, linewidth=2, title="HTF TMO Signal Line")

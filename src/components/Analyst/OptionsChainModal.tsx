@@ -11,9 +11,10 @@ interface OptionsChainModalProps {
   optionType: string;
   setStrikePrice: (strikePrice: string) => void;
   setOrderSymbol: (orderSymbol: string) => void;
+  setEntryPrice: (entryPrice: string) => void;
 }
 
-const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, contractData, symbol, date, optionType, setStrikePrice, setOrderSymbol }) => {
+const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, contractData, symbol, date, optionType, setStrikePrice, setOrderSymbol, setEntryPrice }) => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [selectedQuote, setSelectedQuote] = useState<any>(null);
 
@@ -82,7 +83,7 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
                       Ask Price
                     </th>
                     <th className="border-b border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
-                      Delta
+                      Closed Price
                     </th>
                     <th className="border-b border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
                       Size
@@ -110,6 +111,7 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
                         className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
                         onClick={() => {
                           setSelectedQuote(quote);
+                          setEntryPrice(quote.askPrice);
                           setAlertOpen(true);
                         }}
                       >
@@ -123,7 +125,7 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
                           {quote.askPrice || '-'}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                          {quote.delta || '-'}
+                          {quote.close_price || '-'}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
                           {quote.size || '-'}

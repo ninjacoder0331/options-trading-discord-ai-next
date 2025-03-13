@@ -1,3 +1,4 @@
+'use client'
 import { ShowcaseSection } from "../Layouts/showcase-section";
 import InputGroup from "../FormElements/InputGroup";
 import { useState } from "react";

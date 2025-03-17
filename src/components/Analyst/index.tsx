@@ -1,10 +1,12 @@
 'use client'
 import { ShowcaseSection } from "../Layouts/showcase-section";
 import InputGroup from "../FormElements/InputGroup";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import OptionsChainModal from "./OptionsChainModal";
 import { toast } from "react-toastify";
 import apiClient from "@/lib/axios";
+import { stockTickers } from "./data";
+import Cookies from "js-cookie";
 
 const apiKey = process.env.NEXT_PUBLIC_ALPACA_API_KEY;
 const secretKey = process.env.NEXT_PUBLIC_ALPACA_SECRET_KEY;
@@ -23,10 +25,43 @@ const Analyst = ({analyst , getOpenPositions}) => {
   const [strikePrice, setStrikePrice] = useState("");
   const [optionType, setOptionType] = useState("call");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPrice, setCurrentPrice] = useState(0);
   const [optionsData, setOptionsData] = useState(null);
   const [contractData, setContractData] = useState(null);
   const [orderSymbol, setOrderSymbol] = useState("");
   const [entryPrice , setEntryPrice] = useState("");
+  const [midPrice, setMidPrice] = useState(0);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const suggestionsRef = useRef<HTMLDivElement>(null);
+  const [amount, setAmount] = useState(0);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (suggestionsRef.current && !suggestionsRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSymbolChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.toUpperCase();
+    setSymbol(value);
+    
+    if (value) {
+      const filtered = stockTickers.filter(ticker => 
+        ticker.startsWith(value)
+      );
+      setSuggestions(filtered);
+      setShowSuggestions(true);
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
 
   const mergeOptionsData = (optionsData: any, contractData: any) => {
     const mergedArray = [];
@@ -90,15 +125,24 @@ const Analyst = ({analyst , getOpenPositions}) => {
 
       const chain_baseUrl = `https://data.alpaca.markets/v1beta1/options/snapshots/${symbol}?feed=indicative&limit=1000&type=${optionType}&expiration_date=${date}`
       const contract_baseUrl = `https://paper-api.alpaca.markets/v2/options/contracts?underlying_symbols=${symbol}&status=active&expiration_date=${date}&type=${optionType}&limit=10000`
-      
+      const quote_baseUrl = `https://data.alpaca.markets/v2/stocks/${symbol}/quotes/latest`
+
       const response = await fetch(chain_baseUrl, { headers });
       const data = await response.json();
-      console.log("Fetched data:", data);
+      // console.log("Fetched data:", data);
 
       const response2 = await fetch(contract_baseUrl, { headers });
       const data2 = await response2.json();
-      console.log("Contract data:", data2);
+      // console.log("Contract data:", data2);
       setContractData(data2);
+
+      const response3 = await fetch(quote_baseUrl, { headers });
+      const data3 = await response3.json();
+      // console.log("Quote data:", data3);
+      const currentPrice = (data3.quote.ap + data3.quote.bp) / 2;
+      setCurrentPrice(currentPrice);
+      console.log("Current price:", currentPrice);
+      console.log("data3", data3.quote.ap);
 
       const mergedData = mergeOptionsData(data, data2);
       console.log("Merged data:", mergedData);
@@ -119,6 +163,13 @@ const Analyst = ({analyst , getOpenPositions}) => {
       toast.error("Please check again the bid price");
       return;
     }
+    if(amount === 0){
+      toast.error("Please enter an amount");
+      return;
+    }
+
+    const userID = Cookies.get('user_id');
+    console.log("userID", userID);
 
     const payload = {
       orderSymbol : orderSymbol,
@@ -129,7 +180,13 @@ const Analyst = ({analyst , getOpenPositions}) => {
       orderType : "market",
       timeInForce : "day",
       date : selectedDate,
-      entryPrice : entryPrice
+      entryPrice : entryPrice,
+      
+      childType : childType,
+      userID : userID, 
+      amount :  amount,
+      strikePrice : strikePrice
+
     }
 
     console.log("payload", payload);
@@ -153,45 +210,59 @@ const Analyst = ({analyst , getOpenPositions}) => {
       <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
         Analyst Name : {analyst.name}
       </label>
-      <input 
-        type="text"
-        onChange={(e) => setSymbol(e.target.value.toUpperCase())}
-        placeholder="Enter ticker"
-        className="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white uppercase"
-      />
+      <div className="relative">
+        <input 
+          type="text"
+          value={symbol}
+          onChange={handleSymbolChange}
+          onFocus={() => symbol && setShowSuggestions(true)}
+          placeholder="Enter ticker"
+          className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white uppercase"
+        />
+        
+        {showSuggestions && suggestions.length > 0 && (
+          <div 
+            ref={suggestionsRef}
+            className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-48 overflow-auto"
+          >
+            {suggestions.map((suggestion) => (
+              <div
+                key={suggestion}
+                className="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={() => {
+                  setSymbol(suggestion);
+                  setShowSuggestions(false);
+                }}
+              >
+                {suggestion}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
 
     {/* Call/Put Selection */}
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-row gap-2 align-middle items-center">
-        <label className="text-sm font-medium w-full text-gray-700 dark:text-gray-300">
-          Option Type:
-        </label>
-        <input 
-          type="text"
-          value={childType}
-          className="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 bg-white 
-            outline-none
-            placeholder:text-gray-500
-            hover:border-gray-400 
-            dark:border-gray-700 dark:bg-gray-800 dark:text-white 
-            dark:placeholder:text-gray-400 dark:hover:border-gray-600
-            transition-all duration-200"
-            readOnly
-        />
-      </div>
-      <div className="flex gap-3">
+    <div className="flex flex-row gap-2">
+      
         <button 
           onClick={() => {setOptionType("call"); setChildType("call")}}
-          className="flex-1 px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors">
+          className={`flex-1 px-4 py-2 rounded-lg transition-colors ${
+            optionType === "call"
+              ? "bg-primary text-white hover:bg-primary/90"
+              : "border border-gray-300 hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
+          }`}>
           CALL
         </button>
         <button
           onClick={() => {setOptionType("put"); setChildType("put")}}
-          className="flex-1 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800 transition-colors">
+          className={`flex-1 px-4 py-2 rounded-lg transition-colors ${
+            optionType === "put"
+              ? "bg-primary text-white hover:bg-primary/90"
+              : "border border-gray-300 hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
+          }`}>
           PUT
-        </button>
-      </div>
+      </button>
     </div>
 
     {/* Date Selection */}
@@ -213,31 +284,68 @@ const Analyst = ({analyst , getOpenPositions}) => {
         Strike Price
       </label>
       <input
-        value={strikePrice}
+        placeholder={`${strikePrice} @ $${midPrice.toFixed(2)}`}
         readOnly
-        className="w-full px-4 py-2 text-left rounded-lg 
+        className="w-full 
+          px-3 sm:px-4 
+          py-2 sm:py-2.5
+          text-sm sm:text-base
+          text-left 
+          rounded-lg 
           border border-gray-300 
-          bg-gray-50 
+          bg-gray-50/80 
+          backdrop-blur-sm
           cursor-not-allowed 
-          text-gray-700
-          dark:bg-gray-700 
+          text-green-700
+          placeholder-green-600/70
+          font-medium
+          shadow-sm
+          hover:bg-gray-100/80
+          dark:bg-gray-700/80 
           dark:border-gray-600 
-          dark:text-gray-300
+          dark:text-green-300
+          dark:placeholder-green-400/70
+          dark:hover:bg-gray-600/80
           focus:outline-none
           focus:ring-2
           focus:ring-primary/50
+          focus:border-transparent
           dark:focus:ring-primary/30
-          transition-all duration-200"
+          transition-all duration-200
+          sm:max-w-md
+          md:max-w-lg
+          lg:max-w-xl
+          disabled:opacity-75
+          disabled:cursor-not-allowed"
       />
     </div>
 
-    {/* <div>
-      <button
-        onClick={optionsChainForm} 
-        className="w-full  px-4 py-2 text-left rounded-lg border border-gray-300 hover:bg-red-500 hover:text-white dark:border-gray-700 dark:hover:bg-red-500 transition-colors">
-        Submit
-      </button>
-    </div> */}
+    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+      <label className="text-sm font-medium text-gray-700 dark:text-gray-300 min-w-[70px]">
+        Amount
+      </label>
+      <input
+        type="number"
+        min="0"
+        step="1"
+        value={amount}
+        onChange={(e) => setAmount(Number(e.target.value))}
+        placeholder="Enter amount..."
+        className="w-full 
+          px-3 py-1.5
+          text-sm
+          rounded-md
+          border border-gray-300
+          bg-white 
+          dark:bg-gray-800
+          dark:border-gray-700
+          dark:text-gray-100
+          focus:ring-1
+          focus:ring-primary
+          focus:border-primary
+          outline-none"
+      />
+    </div>
 
     <div className="flex flex-col gap-2">
       <button
@@ -265,6 +373,8 @@ const Analyst = ({analyst , getOpenPositions}) => {
       setStrikePrice={setStrikePrice}
       setOrderSymbol={setOrderSymbol}
       setEntryPrice = {setEntryPrice}
+      currentPrice={currentPrice}
+      setMidPrice={setMidPrice}
     />
   </div>
   )

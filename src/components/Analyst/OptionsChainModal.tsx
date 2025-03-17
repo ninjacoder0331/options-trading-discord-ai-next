@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useRef, useEffect } from 'react';
 import CustomAlert from '../Alert/CustomAlert';
 
 interface OptionsChainModalProps {
@@ -12,11 +12,33 @@ interface OptionsChainModalProps {
   setStrikePrice: (strikePrice: string) => void;
   setOrderSymbol: (orderSymbol: string) => void;
   setEntryPrice: (entryPrice: string) => void;
+  currentPrice: number;
+  setMidPrice: (midPrice: number) => void;
 }
 
-const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, contractData, symbol, date, optionType, setStrikePrice, setOrderSymbol, setEntryPrice }) => {
+const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, contractData, symbol, date, optionType, setStrikePrice, setOrderSymbol, setEntryPrice, currentPrice, setMidPrice }) => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [selectedQuote, setSelectedQuote] = useState<any>(null);
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+  const targetRowRef = useRef<HTMLTableRowElement>(null);
+
+  useEffect(() => {
+    if (targetRowRef.current && tableContainerRef.current) {
+      const container = tableContainerRef.current;
+      const targetRow = targetRowRef.current;
+      
+      // Calculate the scroll position to center the target row
+      const containerHeight = container.clientHeight;
+      const rowPosition = targetRow.offsetTop;
+      const rowHeight = targetRow.clientHeight;
+      const scrollPosition = rowPosition - (containerHeight / 2) + (rowHeight / 2);
+      
+      container.scrollTo({
+        top: scrollPosition,
+        behavior: 'smooth'
+      });
+    }
+  }, [data]); // Scroll when data changes
 
   if (!isOpen) return null;
 
@@ -54,6 +76,9 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
                     }`}>
                     {optionType}
                   </span>
+                  <span className="rounded-full bg-gray-100 px-3 py-1 font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-300">
+                    Current Price: {currentPrice.toFixed(2)}
+                  </span>
                 </div>
               </div>
               <button
@@ -68,7 +93,7 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
           </div>
 
           {/* Table Container with fixed height */}
-          <div className="h-[calc(75vh-8rem)] overflow-auto p-4">
+          <div className="h-[calc(75vh-8rem)] overflow-auto p-4" ref={tableContainerRef}>
             {data ? (
               <table className="w-full table-auto border-collapse">
                 <thead className="sticky top-0 bg-white dark:bg-gray-800">
@@ -77,19 +102,13 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
                       Strike Price
                     </th>
                     <th className="border-b border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                      Mid Price
+                    </th>
+                    <th className="border-b border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
                       Bid Price
                     </th>
                     <th className="border-b border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
                       Ask Price
-                    </th>
-                    <th className="border-b border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
-                      Closed Price
-                    </th>
-                    <th className="border-b border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
-                      Size
-                    </th>
-                    <th className="border-b border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
-                      Name
                     </th>
                     <th className="border-b border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
                       Symbol
@@ -99,45 +118,47 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                   {data.snapshots && Object.entries(data.snapshots)
                     .sort(([, a], [, b]) => {
-                      // Convert strike prices to numbers for comparison
                       const strikeA = Number((a as { strike_price?: string })?.strike_price) || 0;
                       const strikeB = Number((b as { strike_price?: string })?.strike_price) || 0;
-                      return strikeA - strikeB; // ascending order
-                      // use return strikeB - strikeA; for descending order
+                      return strikeA - strikeB;
                     })
-                    .map(([key, quote]: [string, any]) => (
-                      <tr 
-                        key={key} 
-                        className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
-                        onClick={() => {
-                          setSelectedQuote(quote);
-                          setEntryPrice(quote.askPrice);
-                          setAlertOpen(true);
-                        }}
-                      >
-                        <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                          {quote.strike_price || '-'}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                          {quote.bidPrice || '-'}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                          {quote.askPrice || '-'}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                          {quote.close_price || '-'}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                          {quote.size || '-'}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                          {quote.name || '-'}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                          {quote.root_symbol || '-'}
-                        </td>
-                      </tr>
-                    ))}
+                    .map(([key, quote]: [string, any], index) => {
+                      const strikePrice = Number(quote.strike_price) || 0;
+                      const isNearCurrentPrice = Math.abs(strikePrice - currentPrice) <= 5;
+                      
+                      return (
+                        <tr 
+                          key={key} 
+                          ref={isNearCurrentPrice ? targetRowRef : null}
+                          className={`hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer ${
+                            quote.askPrice > currentPrice ? 'bg-blue-50 dark:bg-blue-900/20' : ''
+                          }`}
+                          onClick={() => {
+                            setSelectedQuote(quote);
+                            setEntryPrice(quote.askPrice);
+                            setMidPrice((quote.bidPrice + quote.askPrice)/2);
+                            setAlertOpen(true);
+                          }}
+                        >
+                          <td className="px-6 py-4 text-sm text-emerald-500 dark:text-emerald-400 font-bold">
+                            {quote.strike_price || '-'}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-rose-500 dark:text-rose-400 font-bold">
+                            {((quote.bidPrice + quote.askPrice)/2).toFixed(2) || '-'}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
+                            {quote.bidPrice || '-'}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
+                            {quote.askPrice || '-'}
+                          </td>
+                          
+                          <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
+                            {quote.root_symbol || '-'}
+                          </td>
+                        </tr>
+                      );
+                    })}
                 </tbody>
               </table>
             ) : (
@@ -177,6 +198,7 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
           setStrikePrice(selectedQuote?.strike_price);
           setOrderSymbol(selectedQuote?.symbol);
           setAlertOpen(false);
+          onClose();
         }}
         title="Confirm Option Selection"
         message={`Do you want to select ${symbol} ${optionType} option with strike price ${selectedQuote?.strike_price}?`}

@@ -27,14 +27,6 @@ const ClosePosition = ({closePositions}) => {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">TSLA</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">$1.50</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">$2.20</td>
-                <td className="px-4 py-3 text-sm text-green-600 dark:text-green-400">$0.70</td>
-                <td className="px-4 py-3 text-sm text-green-600 dark:text-green-400">68%</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Tommy</td>
-              </tr>
                 {
                   closePositions.map((position , index) => (
                     <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">

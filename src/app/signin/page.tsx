@@ -33,7 +33,7 @@ const SigninPage = () => {
       
       toast.success("Successfully signed in!");
       // console.log(response.user.role);
-      setAuthToken(response.authToken , response.user.role);
+      setAuthToken(response.authToken , response.user.role , response.user.user_id);
 
       // Check auth status after successful signin
       // await checkAuth();

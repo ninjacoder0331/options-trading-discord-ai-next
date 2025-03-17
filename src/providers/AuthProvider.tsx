@@ -10,13 +10,14 @@ interface User {
   id: string;
   email: string;
   name: string;
+  user_id: string;
 }
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   checkAuth: () => Promise<void>;
-  setAuthToken: (token: string , role: string) => void;
+  setAuthToken: (token: string , role: string , user_id: string) => void;
   signout: () => Promise<void>;
 }
 
@@ -31,12 +32,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const setAuthToken = (token: string , role: string) => {
+  const setAuthToken = (token: string , role: string , user_id: string) => {
     // Set token in cookie (expires in 30 days)
-    console.log("token", token);
-    console.log("role", role);
+    // console.log("token", token);
+    // console.log("role", role);
     Cookies.set('authToken', token, { expires: 1, secure: true });
     Cookies.set('role', role, { expires: 1, secure: true });
+    Cookies.set('user_id', user_id, { expires: 1, secure: true });
     // Update axios default headers
     apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   };
@@ -78,12 +80,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signout = async () => {
     
-      setUser(null);
-      Cookies.remove('authToken');
-      delete apiClient.defaults.headers.common['Authorization'];
-      router.push('/');
+      await setUser(null);
+      
+      await Cookies.remove('authToken');
+      await Cookies.remove('role');
+      await Cookies.remove('user_id');
+      await delete apiClient.defaults.headers.common['Authorization'];
+      // router.push("/");
+      await window.location.reload();
       toast.success('Successfully signed out');
-      window.location.reload();
 
   };
 

@@ -2,7 +2,7 @@
 import Hero from "@/components/Dashboard";
 import { useEffect , useState } from "react";
 import { usePathname } from "next/navigation";
-
+import AdminHome from "@/components/AdminHome";
 export default function Home() {
   const [token, setToken] = useState<string | null>(null);
   const pathname = usePathname();
@@ -18,7 +18,7 @@ export default function Home() {
   }, [pathname]);
   return (
     <>
-      {!token ? <Hero /> : <></>}
+      {!token ? <Hero /> : <AdminHome />}
     </>
   );
 }

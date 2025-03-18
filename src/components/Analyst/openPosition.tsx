@@ -189,7 +189,7 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
                         {showConfirm && (
                           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-                              <p className="text-gray-700 dark:text-gray-300 mb-4">Are you sure you want to sell all positions?</p>
+                              <p className="text-gray-700 dark:text-gray-300 mb-4">Are you sure you want to sell {percentage}% of the position?</p>
                               <div className="flex justify-end gap-2">
                                 <button
                                   onClick={() => {

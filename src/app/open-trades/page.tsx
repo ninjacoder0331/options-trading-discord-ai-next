@@ -1,8 +1,11 @@
 
+import AdminHome from "@/components/AdminHome";
 
 const OpenTrades = () => {
     return (
-        <div>OpenTrades</div>
+        <div>
+            <AdminHome />
+        </div>
     )
 }
 

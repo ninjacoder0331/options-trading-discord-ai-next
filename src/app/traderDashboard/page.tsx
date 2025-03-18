@@ -96,24 +96,31 @@ const TraderDashboard = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-row gap-4 justify-between" key={1}>
+        {analysts[0].status === "start" && (
+          <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
+            <Analyst analyst={analysts[0]} getOpenPositions={getOpenPositions} />
+          </div>
+        )}
+        {analysts[1].status === "start" && (
+          <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
+            <Analyst analyst={analysts[1]} getOpenPositions={getOpenPositions} />
+          </div>
+        )}
+        {analysts[2].status === "start" && (
         <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
-          <Analyst analyst={analysts[0]} getOpenPositions={getOpenPositions} />
+            <Analyst analyst={analysts[2]} getOpenPositions={getOpenPositions} />
         </div>
+        )}
+        {analysts[3].status === "start" && (
         <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
-          <Analyst analyst={analysts[1]} getOpenPositions={getOpenPositions} />
+            <Analyst analyst={analysts[3]} getOpenPositions={getOpenPositions} />
         </div>
-        <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
-          <Analyst analyst={analysts[2]} getOpenPositions={getOpenPositions} />
-        </div>
-        <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
-          <Analyst analyst={analysts[3]} getOpenPositions={getOpenPositions} />
-        </div>
+         )}
       </div>
       
       <div className="rounded-lg bg-white p-6 shadow-1 dark:bg-gray-dark" key={2}>
         <OpenPosition openPositions={openPositions} getOpenPositions={getOpenPositions} getClosePositions={getClosePositions} />
       </div>
-
       <div className="flex flex-row justify-between gap-5" key={3}>
         <ClosePosition closePositions={closePositions} />
         <Anlystics closePositions={closePositions} />

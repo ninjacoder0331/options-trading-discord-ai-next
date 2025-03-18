@@ -171,7 +171,7 @@ const ClosedTrades = () => {
                 openPositions.map((position , key) => (
                   <tr className="border-b border-gray-200 text-center hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800" key={key}>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                      {position.symbol + " " + (position.childType=="call" ? "C" : "P") + " " + position.strikePrice}
+                      {position.symbol + " " + (position.childType=="call" ? "C" : "P") + " $" + position.strikePrice}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                       {position.entryPrice}
@@ -196,12 +196,35 @@ const ClosedTrades = () => {
                       {(((position.closePrice - position.entryPrice) / position.entryPrice) * 100).toFixed(2)}%
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                      {position.date}
+                    {new Date(position.created_at).toLocaleString('en-US', {
+                      month: '2-digit',
+                      day: '2-digit',
+                      year: 'numeric'
+                    })}
+                    <br/>
+                    {new Date(position.created_at).toLocaleString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: true
+                    })}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.existDate}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+                    {new Date(position.exitDate).toLocaleString('en-US', {
+                      month: '2-digit',
+                      day: '2-digit',
+                      year: 'numeric'
+                    })}
+                    <br/>
+                    {new Date(position.exitDate).toLocaleString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: true
+                    })}
+                    </td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                       {traders.map((trader, key) => 
                         trader._id === position.userID ? trader.name : null
+                        
                       )}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.analyst}</td>

@@ -194,6 +194,9 @@ const Analyst = ({analyst , getOpenPositions}) => {
 
     const result = apiClient.post("/api/trader/addPosition", payload).then(res => {
       toast.success("Order placed successfully");
+      setSymbol("");
+      setAmount(0);
+      setStrikePrice("");
       getOpenPositions();
       console.log("result", res);
     }).catch(err => {

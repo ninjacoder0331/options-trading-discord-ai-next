@@ -99,7 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const isAuthenticated = await checkAuth();
 
       if (!isPublicPath && !isAuthenticated) {
-        router.push(`/signin`);
+        router.push(`/`);
       } else if (isPublicPath && isAuthenticated) {
         
       }

@@ -40,6 +40,7 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
     const result = apiClient.post("/api/trader/sellAmount", payload).then(res => {
       getOpenPositions();
       getClosePositions();
+      
       toast.success("All positions sold successfully");
     }).catch(err => {
       console.log("err", err);

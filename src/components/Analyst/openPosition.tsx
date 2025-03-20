@@ -27,7 +27,11 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
 
   const sellAmount = (id) => {
 
-    const amount = parseInt(((id.amount-id.soldAmount) * percentage / 100).toString());
+    let amount = parseInt((id.amount * percentage / 100).toString());
+    const restamount = id.amount - id.soldAmount;
+    if(amount > restamount){
+      amount = restamount;
+    }
     const payload = {
       id : id._id,
       amount : amount
@@ -38,10 +42,15 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
     }
     console.log("payload", payload);
     const result = apiClient.post("/api/trader/sellAmount", payload).then(res => {
-      getOpenPositions();
-      getClosePositions();
-      
-      toast.success("All positions sold successfully");
+      if(res.data == 200){
+        toast.success("Order placed successfully");
+        getOpenPositions();
+        getClosePositions();
+      }
+      else{
+        toast.info("Please check the order details or market time");
+      }
+            
     }).catch(err => {
       console.log("err", err);
       toast.error("Error selling all positions");

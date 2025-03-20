@@ -171,7 +171,17 @@ const ClosedTrades = () => {
                 openPositions.map((position , key) => (
                   <tr className="border-b border-gray-200 text-center hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800" key={key}>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                      {position.symbol + " " + (position.childType=="call" ? "C" : "P") + " $" + position.strikePrice}
+                      {position.symbol + " " + (position.childType=="call" ? "C" : "P") + " $" + position.strikePrice}<br/>
+                      {new Date(position.exitDate).toLocaleString('en-US', {
+                        month: '2-digit',
+                        day: '2-digit',
+                        year: 'numeric'
+                      })} &nbsp;&nbsp;
+                      {new Date(position.exitDate).toLocaleString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                      })}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                       {position.entryPrice}

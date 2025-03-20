@@ -22,9 +22,9 @@ const Anlystics = ({closePositions}) => {
           
           Profit = closePositions[j].closePrice - closePositions[j].entryPrice;
           if(Profit > 0){
-            totalWins += Profit;
+            totalWins += 1;
           }else{
-            totalLosses += Profit;
+            totalLosses += 1;
           }
         }
       }
@@ -53,7 +53,7 @@ const Anlystics = ({closePositions}) => {
                   Wins
                 </th>
                 <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
-                  Losses
+                  Loses
                 </th>
                 <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
                   % Wins
@@ -72,8 +72,8 @@ const Anlystics = ({closePositions}) => {
                   <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.analyst}</td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.wins}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{(position.losses).toFixed(2)}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{(position.percentage).toFixed(2)}%</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{(position.losses).toFixed(0)}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{(position.percentage).toFixed(0)}%</td>
                   </tr>
                 ))
               }

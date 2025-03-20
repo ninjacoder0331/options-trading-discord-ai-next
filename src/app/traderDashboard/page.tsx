@@ -121,7 +121,7 @@ const TraderDashboard = () => {
       <div className="rounded-lg bg-white p-6 shadow-1 dark:bg-gray-dark" key={2}>
         <OpenPosition openPositions={openPositions} getOpenPositions={getOpenPositions} getClosePositions={getClosePositions} />
       </div>
-      <div className="flex flex-row justify-between gap-5" key={3}>
+      <div className="flex flex-col md:flex-row justify-between gap-5" key={3}>
         <ClosePosition closePositions={closePositions} />
         <Anlystics closePositions={closePositions} />
       </div>

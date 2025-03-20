@@ -1,0 +1,19 @@
+// Modify the HTF security call to be more reliable
+htfClose = request.security(syminfo.tickerid, htf, close[1], barmerge.gaps_off, barmerge.lookahead_off)
+
+// Add confirmation buffer
+var float prevMain = na
+var float prevSignal = na
+
+// Store previous values
+if barstate.isfirst
+    prevMain := Main
+    prevSignal := Signal
+
+// More robust entry/exit conditions
+longCondition = ta.crossover(Main, Signal) and prevMain < prevSignal
+exitCondition = ta.crossunder(Main, Signal) and prevMain > prevSignal
+
+// Update previous values
+prevMain := Main
+prevSignal := Signal 

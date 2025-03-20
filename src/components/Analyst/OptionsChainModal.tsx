@@ -21,6 +21,7 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
   const [selectedQuote, setSelectedQuote] = useState<any>(null);
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const targetRowRef = useRef<HTMLTableRowElement>(null);
+  const [optionsData, setOptionsData] = useState<any>(null);
 
   useEffect(() => {
     if (targetRowRef.current && tableContainerRef.current) {
@@ -37,6 +38,8 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
         top: scrollPosition,
         behavior: 'smooth'
       });
+
+      setOptionsData(data);
     }
   }, [data]); // Scroll when data changes
 
@@ -54,7 +57,7 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
         ></div>
 
         {/* Changed width and height to 3/4 of screen */}
-        <div className="relative z-[1001] h-[75vh] w-[75vw] rounded-lg bg-white shadow-xl dark:bg-gray-800">
+        <div className="relative z-[1001] h-[75vh] w-[40vw] rounded-lg bg-white shadow-xl dark:bg-gray-800">
           {/* Header */}
           <div className="border-b border-gray-200 p-4 dark:border-gray-700">
             <div className="flex items-center justify-between">
@@ -137,7 +140,10 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
                             setSelectedQuote(quote);
                             setEntryPrice(quote.askPrice);
                             setMidPrice((quote.bidPrice + quote.askPrice)/2);
-                            setAlertOpen(true);
+                            setStrikePrice(quote.strike_price);
+                            setOrderSymbol(quote.symbol);
+                            onClose()
+                            // setAlertOpen(true);
                           }}
                         >
                           <td className="px-6 py-4 text-sm text-emerald-500 dark:text-emerald-400 font-bold">

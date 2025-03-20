@@ -176,29 +176,30 @@ const Analyst = ({analyst , getOpenPositions}) => {
       symbol : symbol,
       quantity : 1,
       analyst : analyst.name,
-      side : optionType === "call" ? "buy" : "sell",
+      side : optionType,
       orderType : "market",
       timeInForce : "day",
       date : selectedDate,
       entryPrice : entryPrice,
-      
       childType : childType,
       userID : userID, 
       amount :  amount,
       strikePrice : strikePrice
 
     }
-
-    console.log("payload", payload);
-
+    // console.log("payload", payload);
 
     const result = apiClient.post("/api/trader/addPosition", payload).then(res => {
-      toast.success("Order placed successfully");
       setSymbol("");
       setAmount(0);
       setStrikePrice("");
       getOpenPositions();
-      console.log("result", res);
+      if(res.data == 200)
+        toast.success("Order placed successfully");
+      else if(res.data == 422) {
+        toast.info("Please check the order details or market time");
+      }
+      // console.log("result", res.data);
     }).catch(err => {
       toast.error("Error placing order");
       console.error("error", err);
@@ -209,9 +210,9 @@ const Analyst = ({analyst , getOpenPositions}) => {
   return (
     <div className="space-y-4">
     {/* Ticker Input */}
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-        Analyst Name : {analyst.name}
+    <div className="flex flex-col gap-4">
+      <label className="text-lg font-medium  text-gray-700 dark:text-gray-300">
+        Analyst Name : <span className="font-bold text-blue-600 dark:text-blue-400">{analyst.name}</span>
       </label>
       <div className="relative">
         <input 
@@ -269,27 +270,28 @@ const Analyst = ({analyst , getOpenPositions}) => {
     </div>
 
     {/* Date Selection */}
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+    <div className="flex flex-row items-center justify-between gap-2">
+      <label className="text-md font-medium text-gray-700 dark:text-gray-300">
         Date
       </label>
       <input
         type="date"
         value={selectedDate}
         onChange={(e) => {setDate(e.target.value); setSelectedDate(e.target.value);}}
-        className="w-full px-4 py-2 text-left rounded-lg border border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 dark:bg-gray-900 dark:text-white transition-colors focus:outline-none focus:border-primary"
+        className="w-full px-4 py-2 max-w-[250px] text-left rounded-lg border border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 dark:bg-gray-900 dark:text-white transition-colors focus:outline-none focus:border-primary"
       />
     </div>
 
     {/* Price Selection */}
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+    <div className="flex flex-row justify-between gap-2 items-center">
+      <label className="text-md font-medium text-gray-700 dark:text-gray-300">
         Strike Price
       </label>
       <input
         placeholder={`${strikePrice} @ $${midPrice.toFixed(2)}`}
         readOnly
         className="w-full 
+          max-w-[250px]
           px-3 sm:px-4 
           py-2 sm:py-2.5
           text-sm sm:text-base
@@ -315,16 +317,13 @@ const Analyst = ({analyst , getOpenPositions}) => {
           focus:border-transparent
           dark:focus:ring-primary/30
           transition-all duration-200
-          sm:max-w-md
-          md:max-w-lg
-          lg:max-w-xl
           disabled:opacity-75
           disabled:cursor-not-allowed"
       />
     </div>
 
     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-      <label className="text-sm font-medium text-gray-700 dark:text-gray-300 min-w-[70px]">
+      <label className="text-sm font-bold text-gray-700 dark:text-gray-300 min-w-[70px]">
         Amount
       </label>
       <input

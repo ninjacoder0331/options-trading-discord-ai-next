@@ -11,7 +11,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from '@/providers/AuthProvider';
 
-import { Sidebar } from "@/components/Layouts/sidebar";
+// import { Sidebar } from "@/components/Layouts/sidebar";
 import { useState , useEffect } from "react";
 import { usePathname , useRouter } from "next/navigation";
 import Cookies from "js-cookie";
@@ -83,10 +83,10 @@ export default function RootLayout({
               </div>
             ):(
               <div className="flex min-h-screen">
-                <Sidebar />
+                {/* <Sidebar /> */}
                 <div className="w-full bg-gray-2 dark:bg-[#020d1a]">
                   <HeaderDashboard />
-                  <main className="isolate mx-auto w-full max-w-screen-2xl overflow-hidden p-4 md:p-3 2xl:p-5">
+                  <main className="isolate mx-auto w-full overflow-hidden p-4 md:p-3 2xl:px-20 2xl:py-5">
                     {children}
                   </main>
                 </div>

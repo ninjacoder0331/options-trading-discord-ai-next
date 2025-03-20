@@ -33,7 +33,12 @@ const AdminHome = () => {
   const sellAmount = (id) => {
 
 
-    const amount = parseInt(((id.amount-id.soldAmount) * percentage / 100).toString());
+    let amount = parseInt((id.amount * percentage / 100).toString());
+    const restamount = id.amount - id.soldAmount;
+
+    if(amount > restamount){
+      amount = restamount;
+    }
 
     const payload = {
       id : id._id,
@@ -130,22 +135,22 @@ const AdminHome = () => {
           <table className="w-full table-auto border-collapse">
             <thead>
               <tr className="bg-primary/10 dark:bg-primary/5">
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Open Positions
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Call/Put
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Trader
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Analyst
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Entry
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Current Price
                 </th>
                 <th className="whitespace-nowrap px-4 text-center py-3 text-sm font-semibold text-gray-800 dark:text-gray-200">
@@ -154,16 +159,16 @@ const AdminHome = () => {
                 <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   number of<br/> Opens
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   P&L
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   ROI
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Time in
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                  <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Positions
                 </th>
                 <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
@@ -183,7 +188,10 @@ const AdminHome = () => {
                 openPositions.map((position , key) => (
                   <tr className="border-b border-gray-200 text-center hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800" key={key}>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.symbol}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.date + " " + position.childType}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+                      { position.childType + "  $" + position.strikePrice }<br/>
+                      { position.date}
+                    </td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                       {traders.map((trader, key) => 
                         trader._id === position.userID ? trader.name : null

@@ -17,12 +17,15 @@ const TraderTable = () => {
   const [brokerage, setBrokerage] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedBrokerage, setSelectedBrokerage] = useState('');
+  const [tradeAmt, setTradeAmt] = useState('');
+  const [editTraderId, setEditTraderId] = useState('');
 
   const [traders, setTraders] = useState([]);
   const [newUser, setNewUser] = useState({
     name: '',
     login: '',
-    password: ''
+    password: '',
+    tradeAmt: ''
   });
 
   // Method 1: Using .then()
@@ -79,8 +82,6 @@ const TraderTable = () => {
 
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      console.log(newUser);
       const email = newUser.login;
       const password = newUser.password;
       const name = newUser.name;
@@ -90,6 +91,28 @@ const TraderTable = () => {
         return;
       }
 
+    if(editTraderId !== ""){
+      const amount = newUser.tradeAmt;
+      const traderId = editTraderId;
+      const payload = {
+        email,
+        password,
+        name,
+        amount,
+        traderId
+      }
+
+      apiClient.post("/api/auth/updateTrader", payload)
+      .then(response => {
+        toast.success("Trader updated successfully");
+        console.log(response.data);
+        getTraders();
+      })
+      
+    }
+    else{
+    try {
+      // console.log(newUser);
       await authService.signup({
         email,
         password,
@@ -98,14 +121,19 @@ const TraderTable = () => {
       
       toast.success('User created successfully');
       getTraders();
-      setNewUser({ name: '', login: '', password: '' }); // Reset form
+      setNewUser({ name: '', login: '', password: '', tradeAmt: '' }); // Reset form
     } catch (error) {
       toast.error('Failed to create user');
-      console.error('Error:', error);
+        console.error('Error:', error);
+      }
     }
   };
 
   const handleDeleteTrader = async (traderId: string) => {
+    if(editTraderId !== ""){
+      setEditTraderId('');
+    }
+    else{
     try {
       console.log(traderId);
       await apiClient.post('/api/trader/deleteTrader', {
@@ -114,11 +142,17 @@ const TraderTable = () => {
       toast.success('Trader deleted successfully');
       // Refresh the traders list
       getTraders();
+      setEditTraderId('');
     } catch (error) {
       toast.error('Failed to delete trader');
       console.error('Error:', error);
-    }
+    }}
   };
+
+  const editTrader = (trader: any) => {
+    setNewUser({ name: trader.name, login: trader.email, password: trader.password, tradeAmt: "1" });
+    setEditTraderId(trader._id);
+  }
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -171,12 +205,15 @@ const TraderTable = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-          {traders.map((trader, i) => (
-                <tr key={i} className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800">
+              {traders.map((trader, i) => (
+                <tr key={i} 
+                  onClick={()=>editTrader(trader)}
+                  className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
+                >
                   <td className="px-2 py-2 text-sm text-gray-700 dark:text-gray-300">{trader.name}</td>
                   <td className="px-2 py-2 text-sm text-gray-700 dark:text-gray-300">{trader.email}</td>
                   <td className="px-2 py-2 text-sm text-gray-700 dark:text-gray-300">{trader.password}</td>
-                  <td className="px-2 py-2 text-sm text-gray-700 dark:text-gray-300">${trader.tradeAmt}</td>
+                  <td className="px-2 py-2 text-sm text-gray-700 dark:text-gray-300">${trader.amount}</td>
                   <td className="px-2 py-2 text-sm text-gray-700 dark:text-gray-300">{trader.analyst1}</td>
                   <td className="px-2 py-2 text-sm text-gray-700 dark:text-gray-300">{trader.analyst2}</td>
                   <td className="px-2 py-2 text-sm text-gray-700 dark:text-gray-300">{trader.analyst3}</td>
@@ -219,7 +256,7 @@ const TraderTable = () => {
         <div className="min-w-[600px]"> {/* Minimum width for form content */}
           <div className="p-4 sm:p-6">
             <h2 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white">Create New User</h2>
-            <div onSubmit={handleCreateUser} className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div onSubmit={handleCreateUser} className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div className="w-full">
                 <input
                   type="text"
@@ -250,12 +287,22 @@ const TraderTable = () => {
                   required
                 />
               </div>
-              <div className="sm:col-span-2 lg:col-span-3">
+              <div className="w-full">
+                <input
+                  type="text"
+                  value={newUser.tradeAmt}
+                  onChange={(e) => setNewUser({...newUser, tradeAmt: e.target.value})}
+                  placeholder="Trade Amount"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                  required
+                />
+              </div>
+              <div className="sm:col-span-2 lg:col-span-4">
                 <button
                   onClick={handleCreateUser}
                   className="w-full rounded-lg bg-primary px-4 py-2 text-sm text-white hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50"
                 >
-                  Create User
+                  {editTraderId !== "" ? "Update User" : "Create User"}
                 </button>
               </div>
             </div>

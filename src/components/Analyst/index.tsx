@@ -34,7 +34,6 @@ const Analyst = ({analyst , getOpenPositions}) => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const suggestionsRef = useRef<HTMLDivElement>(null);
-  const [amount, setAmount] = useState(0);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -163,10 +162,7 @@ const Analyst = ({analyst , getOpenPositions}) => {
       toast.error("Please check again the bid price");
       return;
     }
-    if(amount === 0){
-      toast.error("Please enter an amount");
-      return;
-    }
+    
 
     const userID = Cookies.get('user_id');
     console.log("userID", userID);
@@ -183,7 +179,6 @@ const Analyst = ({analyst , getOpenPositions}) => {
       entryPrice : entryPrice,
       childType : childType,
       userID : userID, 
-      amount :  amount,
       strikePrice : strikePrice
 
     }
@@ -191,7 +186,6 @@ const Analyst = ({analyst , getOpenPositions}) => {
 
     const result = apiClient.post("/api/trader/addPosition", payload).then(res => {
       setSymbol("");
-      setAmount(0);
       setStrikePrice("");
       getOpenPositions();
       if(res.data == 200)
@@ -322,32 +316,7 @@ const Analyst = ({analyst , getOpenPositions}) => {
       />
     </div>
 
-    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-      <label className="text-sm font-bold text-gray-700 dark:text-gray-300 min-w-[70px]">
-        Amount
-      </label>
-      <input
-        type="number"
-        min="0"
-        step="1"
-        value={amount}
-        onChange={(e) => setAmount(Number(e.target.value))}
-        placeholder="Enter amount..."
-        className="w-full 
-          px-3 py-1.5
-          text-sm
-          rounded-md
-          border border-gray-300
-          bg-white 
-          dark:bg-gray-800
-          dark:border-gray-700
-          dark:text-gray-100
-          focus:ring-1
-          focus:ring-primary
-          focus:border-primary
-          outline-none"
-      />
-    </div>
+
 
     <div className="flex flex-col gap-2">
       <button

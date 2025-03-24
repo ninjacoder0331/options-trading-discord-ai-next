@@ -65,7 +65,6 @@ const TraderDashboard = () => {
   }
 
   const getClosePositions = async () => {
-    
     const response = await apiClient.post('/api/trader/getTraderClosePositions' , {
       traderId : Cookies.get('user_id')
     });

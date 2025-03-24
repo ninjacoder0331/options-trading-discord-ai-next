@@ -11,6 +11,7 @@ import request from 'request';
 import { TradeStationClient } from "tradestation-api-ts";
 import { toast } from "react-toastify";
 
+
 const TraderDashboard = () => {
 
   const [analysts, setAnalysts] = useState([]);
@@ -44,7 +45,9 @@ const TraderDashboard = () => {
   // Method 1: Using .then()
 
   const getOpenPositions = async () => {
-    const response = await apiClient.get('/api/trader/getOpenPositions');
+    const response = await apiClient.post('/api/trader/getTraderOpenPositions' , {
+      traderId : Cookies.get('user_id')
+    });
     setOpenPositions(response.data.positions);
     return response;
   }
@@ -62,7 +65,10 @@ const TraderDashboard = () => {
   }
 
   const getClosePositions = async () => {
-    const response = await apiClient.get('/api/trader/getClosePositions');
+    
+    const response = await apiClient.post('/api/trader/getTraderClosePositions' , {
+      traderId : Cookies.get('user_id')
+    });
     setClosePositions(response.data.positions);
     return response;
   }

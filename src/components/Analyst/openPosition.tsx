@@ -164,7 +164,7 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
                       className="rounded-lg bg-red-500 px-3 py-1 text-xs text-white hover:bg-red-600"
                       onClick={() => {
                         setShowConfirm(true);
-                        setPercentage(33);
+                        setPercentage(34);
                         setPendingSellId(position);
                       }}
                       >

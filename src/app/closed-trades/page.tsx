@@ -200,7 +200,7 @@ const ClosedTrades = () => {
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                       {((position.closePrice - position.entryPrice)*position.soldAmount * 100).toFixed(2)}
                     </td>
-                    <td className={`px-4 py-3 text-sm ${(position.currentPrice - position.entryPrice) >= 0 
+                    <td className={`px-4 py-3 text-sm ${(position.closePrice - position.entryPrice) >= 0 
                       ? 'text-green-600 dark:text-green-400' 
                       : 'text-red-600 dark:text-red-400'}`}>
                       {(((position.closePrice - position.entryPrice) / position.entryPrice) * 100).toFixed(2)}%

@@ -103,7 +103,6 @@ const Analyst = ({analyst , getOpenPositions}) => {
 
   const optionsChainForm = async() => {
     try {
-
       console.log("symbol", symbol);
       console.log("date", date);
       console.log("optionType", optionType);
@@ -177,6 +176,7 @@ const Analyst = ({analyst , getOpenPositions}) => {
       timeInForce : "day",
       date : selectedDate,
       entryPrice : entryPrice,
+      // amount : amount,
       childType : childType,
       userID : userID, 
       strikePrice : strikePrice
@@ -202,10 +202,10 @@ const Analyst = ({analyst , getOpenPositions}) => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
     {/* Ticker Input */}
-    <div className="flex flex-col gap-4">
-      <label className="text-lg font-medium  text-gray-700 dark:text-gray-300">
+    <div className="flex flex-col gap-2">
+      <label className="text-base font-medium text-gray-700 dark:text-gray-300">
         Analyst Name : <span className="font-bold text-blue-600 dark:text-blue-400">{analyst.name}</span>
       </label>
       <div className="relative">
@@ -215,7 +215,7 @@ const Analyst = ({analyst , getOpenPositions}) => {
           onChange={handleSymbolChange}
           onFocus={() => symbol && setShowSuggestions(true)}
           placeholder="Enter ticker"
-          className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white uppercase"
+          className="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-white uppercase"
         />
         
         {showSuggestions && suggestions.length > 0 && (
@@ -245,7 +245,7 @@ const Analyst = ({analyst , getOpenPositions}) => {
       
         <button 
           onClick={() => {setOptionType("call"); setChildType("call")}}
-          className={`flex-1 px-4 py-2 rounded-lg transition-colors ${
+          className={`flex-1 px-3 py-1.5 rounded-lg transition-colors ${
             optionType === "call"
               ? "bg-primary text-white hover:bg-primary/90"
               : "border border-gray-300 hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
@@ -254,7 +254,7 @@ const Analyst = ({analyst , getOpenPositions}) => {
         </button>
         <button
           onClick={() => {setOptionType("put"); setChildType("put")}}
-          className={`flex-1 px-4 py-2 rounded-lg transition-colors ${
+          className={`flex-1 px-3 py-1.5 rounded-lg transition-colors ${
             optionType === "put"
               ? "bg-primary text-white hover:bg-primary/90"
               : "border border-gray-300 hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
@@ -265,20 +265,20 @@ const Analyst = ({analyst , getOpenPositions}) => {
 
     {/* Date Selection */}
     <div className="flex flex-row items-center justify-between gap-2">
-      <label className="text-md font-medium text-gray-700 dark:text-gray-300">
+      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
         Date
       </label>
       <input
         type="date"
         value={selectedDate}
         onChange={(e) => {setDate(e.target.value); setSelectedDate(e.target.value);}}
-        className="w-full px-4 py-2 max-w-[250px] text-left rounded-lg border border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 dark:bg-gray-900 dark:text-white transition-colors focus:outline-none focus:border-primary"
+        className="w-full px-3 py-1.5 max-w-[250px] text-left rounded-lg border border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 dark:bg-gray-900 dark:text-white transition-colors focus:outline-none focus:border-primary"
       />
     </div>
 
     {/* Price Selection */}
     <div className="flex flex-row justify-between gap-2 items-center">
-      <label className="text-md font-medium text-gray-700 dark:text-gray-300">
+      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
         Strike Price
       </label>
       <input
@@ -286,9 +286,9 @@ const Analyst = ({analyst , getOpenPositions}) => {
         readOnly
         className="w-full 
           max-w-[250px]
-          px-3 sm:px-4 
-          py-2 sm:py-2.5
-          text-sm sm:text-base
+          px-3 
+          py-1.5
+          text-sm
           text-left 
           rounded-lg 
           border border-gray-300 
@@ -318,16 +318,16 @@ const Analyst = ({analyst , getOpenPositions}) => {
 
 
 
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-row gap-2">
       <button
         onClick={optionsChainForm}
-        className="rounded-lg bg-primary px-4 py-2 text-white hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50"
+        className="rounded-lg bg-primary px-3 py-1.5 text-white hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50"
       >
         View Options Chain
       </button>
       <button
         onClick={buyOrder}
-        className="rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-rose-500 focus:outline-none focus:ring-2 focus:ring-primary/50"
+        className="rounded-lg bg-green-600 px-3 py-1.5 text-white hover:bg-rose-500 focus:outline-none focus:ring-2 focus:ring-primary/50"
       >
         Buy Order
       </button>
@@ -347,7 +347,7 @@ const Analyst = ({analyst , getOpenPositions}) => {
       currentPrice={currentPrice}
       setMidPrice={setMidPrice}
     />
-  </div>
+    </div>
   )
 }
 

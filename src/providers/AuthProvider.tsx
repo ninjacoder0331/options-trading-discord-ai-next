@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await Cookies.remove('role');
       await Cookies.remove('user_id');
       await delete apiClient.defaults.headers.common['Authorization'];
-      // router.push("/");
+      router.push("/signin");
       await window.location.reload();
       toast.success('Successfully signed out');
 

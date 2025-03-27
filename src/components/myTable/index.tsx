@@ -19,13 +19,16 @@ const TraderTable = () => {
   const [selectedBrokerage, setSelectedBrokerage] = useState('');
   const [tradeAmt, setTradeAmt] = useState('');
   const [editTraderId, setEditTraderId] = useState('');
-
+  const [analysts, setAnalysts] = useState([]);
   const [traders, setTraders] = useState([]);
   const [newUser, setNewUser] = useState({
     name: '',
     login: '',
     password: '',
-    tradeAmt: ''
+    tradeAmt: '',
+    amount: '',
+    stopLoss: '',
+    profitTaking: ''
   });
 
   // Method 1: Using .then()
@@ -33,6 +36,7 @@ const TraderTable = () => {
     setIsLoading(true);
     getBrokerages();
     getTraders();
+    getAnalysts();
   }, []);
 
   const getTraders = () => {
@@ -40,12 +44,25 @@ const TraderTable = () => {
       .then(response => {
         setTraders(response.data);
         setIsLoading(false);
-        console.log(response.data);
+        // console.log(response.data);
       })
       .catch(error => {
         setIsLoading(false);
         console.error('Error:', error);
       });
+  }
+
+  const getAnalysts = () => {
+    return apiClient.get('/api/trader/getAnalysts')
+      .then(response => {
+        setAnalysts(response.data);
+        setIsLoading(false);
+        // console.log("analysts",response.data);
+      })
+      .catch(error => {
+        setIsLoading(false);
+        console.error('Error:', error);
+    });
   }
 
 
@@ -54,7 +71,7 @@ const TraderTable = () => {
       .then(response => {
         setBrokerage(response.data);
         setIsLoading(false);
-        console.log(response.data);
+        // console.log(response.data);
       })
       .catch(error => {
         setIsLoading(false);
@@ -80,6 +97,24 @@ const TraderTable = () => {
     });
   };
 
+  const handleAnalystChange = (traderId: string, analystId: string) => {
+    // setSelectedAnalyst(analystId);
+    console.log(traderId, analystId);
+    apiClient.post("/api/trader/updateAnalyst", {
+      traderId: traderId,
+      analystId: analystId
+    })
+    .then(response => {
+      toast.success("Analyst updated successfully");
+      console.log(response.data);
+      getTraders();
+    })
+    .catch(error => {
+      toast.error("Error updating analyst");
+      console.error('Error:', error);
+    });
+  };
+
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
       const email = newUser.login;
@@ -92,13 +127,17 @@ const TraderTable = () => {
       }
 
     if(editTraderId !== ""){
-      const amount = newUser.tradeAmt;
+      const amount = newUser.amount;
+      const stopLoss = newUser.stopLoss;
+      const profitTaking = newUser.profitTaking;
       const traderId = editTraderId;
       const payload = {
         email,
         password,
         name,
         amount,
+        stopLoss,
+        profitTaking,
         traderId
       }
 
@@ -121,7 +160,7 @@ const TraderTable = () => {
       
       toast.success('User created successfully');
       getTraders();
-      setNewUser({ name: '', login: '', password: '', tradeAmt: '' }); // Reset form
+      setNewUser({ name: '', login: '', password: '', tradeAmt: '', amount: '', stopLoss: '', profitTaking: '' }); // Reset form
     } catch (error) {
       toast.error('Failed to create user');
         console.error('Error:', error);
@@ -150,7 +189,12 @@ const TraderTable = () => {
   };
 
   const editTrader = (trader: any) => {
-    setNewUser({ name: trader.name, login: trader.email, password: trader.password, tradeAmt: "1" });
+    if(!trader.stopLoss || !trader.profitTaking){
+      setNewUser({ name: trader.name, login: trader.email, password: trader.password, tradeAmt: "1", amount: trader.amount, stopLoss: "0", profitTaking: "0" });
+    }
+    else{
+      setNewUser({ name: trader.name, login: trader.email, password: trader.password, tradeAmt: "1", amount: trader.amount, stopLoss: trader.stopLoss, profitTaking: trader.profitTaking });
+    }
     setEditTraderId(trader._id);
   }
 
@@ -163,7 +207,7 @@ const TraderTable = () => {
       {/* Table Container */}
       <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-dark">
         <div className="min-w-[1000px]"> {/* Minimum width for table content */}
-          <table className="w-full table-auto border-collapse">
+          <table className="w-full table-auto cursor-pointer border-collapse">
             <thead className="sticky top-0 z-10">
               <tr className="bg-primary/10 dark:bg-primary/5">
                 <th className="whitespace-nowrap px-2 py-2 text-left text-sm font-semibold text-gray-800 dark:text-gray-200 w-24">
@@ -176,19 +220,7 @@ const TraderTable = () => {
                   PW
                 </th>
                 <th className="whitespace-nowrap px-2 py-2 text-left text-sm font-semibold text-gray-800 dark:text-gray-200 w-20">
-                  Trade$
-                </th>
-                <th className="whitespace-nowrap px-2 py-2 text-left text-sm font-semibold text-gray-800 dark:text-gray-200 w-20">
-                  A1
-                </th>
-                <th className="whitespace-nowrap px-2 py-2 text-left text-sm font-semibold text-gray-800 dark:text-gray-200 w-20">
-                  A2
-                </th>
-                <th className="whitespace-nowrap px-2 py-2 text-left text-sm font-semibold text-gray-800 dark:text-gray-200 w-20">
-                  A3
-                </th>
-                <th className="whitespace-nowrap px-2 py-2 text-left text-sm font-semibold text-gray-800 dark:text-gray-200 w-20">
-                  A4
+                  Trade
                 </th>
                 <th className="whitespace-nowrap px-2 py-2 text-left text-sm font-semibold text-gray-800 dark:text-gray-200 w-20">
                   Stop%
@@ -198,6 +230,9 @@ const TraderTable = () => {
                 </th>
                 <th className="whitespace-nowrap px-2 py-2 text-left text-sm font-semibold text-gray-800 dark:text-gray-200 w-32">
                   Brokerage
+                </th>
+                <th className="whitespace-nowrap px-2 py-2 text-left text-sm font-semibold text-gray-800 dark:text-gray-200 w-20">
+                  Analyst
                 </th>
                 <th className="whitespace-nowrap px-2 py-2 text-left text-sm font-semibold text-gray-800 dark:text-gray-200 w-20">
                   Actions
@@ -213,11 +248,7 @@ const TraderTable = () => {
                   <td className="px-2 py-2 text-sm text-gray-700 dark:text-gray-300">{trader.name}</td>
                   <td className="px-2 py-2 text-sm text-gray-700 dark:text-gray-300">{trader.email}</td>
                   <td className="px-2 py-2 text-sm text-gray-700 dark:text-gray-300">{trader.password}</td>
-                  <td className="px-2 py-2 text-sm text-gray-700 dark:text-gray-300">${trader.amount}</td>
-                  <td className="px-2 py-2 text-sm text-gray-700 dark:text-gray-300">{trader.analyst1}</td>
-                  <td className="px-2 py-2 text-sm text-gray-700 dark:text-gray-300">{trader.analyst2}</td>
-                  <td className="px-2 py-2 text-sm text-gray-700 dark:text-gray-300">{trader.analyst3}</td>
-                  <td className="px-2 py-2 text-sm text-gray-700 dark:text-gray-300">{trader.analyst4}</td>
+                  <td className="px-2 py-2 text-sm text-gray-700 dark:text-gray-300">${(trader.amount).toFixed(1)}</td>
                   <td className="px-2 py-2 text-sm text-red-500">{trader.stopLoss}%</td>
                   <td className="px-2 py-2 text-sm text-green-500">{trader.profitTaking}%</td>
                   <td className="px-2 py-2 text-sm">
@@ -232,6 +263,20 @@ const TraderTable = () => {
                       ))}
                     </select>
                   </td>
+
+                  <td className="px-2 py-2 text-sm">
+                    <select
+                      value={trader.analyst || ''}
+                      onChange={(e) => handleAnalystChange(trader._id, e.target.value)}
+                      className="w-full rounded-md border border-gray-300 bg-white px-1 py-0.5 text-blue-500 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700"
+                    >
+                      <option value="">Select</option>
+                      {analysts?.map((item, index) => (
+                        <option key={index} value={item._id}>{item.name}</option>
+                      ))}
+                    </select>
+                  </td>
+                  
                   <td className="px-2 py-2 text-sm">
                     <button
                       onClick={() => {
@@ -258,6 +303,7 @@ const TraderTable = () => {
             <h2 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white">Create New User</h2>
             <div onSubmit={handleCreateUser} className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div className="w-full">
+                <p className="text-sm font-semibold text-gray-800 dark:text-white">Name</p>
                 <input
                   type="text"
                   value={newUser.name}
@@ -268,6 +314,7 @@ const TraderTable = () => {
                 />
               </div>
               <div className="w-full">
+                <p className="text-sm font-semibold text-gray-800 dark:text-white">Login</p>
                 <input
                   type="text"
                   value={newUser.login}
@@ -278,6 +325,7 @@ const TraderTable = () => {
                 />
               </div>
               <div className="w-full">
+                <p className="text-sm font-semibold text-gray-800 dark:text-white">Password</p>
                 <input
                   type="password"
                   value={newUser.password}
@@ -288,15 +336,40 @@ const TraderTable = () => {
                 />
               </div>
               <div className="w-full">
+                <p className="text-sm font-semibold text-gray-800 dark:text-white">Trade Amount</p>
                 <input
                   type="text"
-                  value={newUser.tradeAmt}
+                  value={newUser.amount}
                   onChange={(e) => setNewUser({...newUser, tradeAmt: e.target.value})}
                   placeholder="Trade Amount"
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   required
                 />
               </div>
+              <div className="w-full">
+                <p className="text-sm font-semibold text-gray-800 dark:text-white">Stop Loss</p>
+                <input
+                  type="text"
+                  value={newUser.stopLoss}
+                  onChange={(e) => setNewUser({...newUser, stopLoss: e.target.value})}
+                  placeholder="Stop Loss"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                  required
+                />
+              </div>
+              <div className="w-full">
+                <p className="text-sm font-semibold text-gray-800 dark:text-white">Profit Taking</p>
+                <input
+                  type="text"
+                  value={newUser.profitTaking}
+                  onChange={(e) => setNewUser({...newUser, profitTaking: e.target.value})}
+                  placeholder="Profit Taking"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                  required
+                />
+              </div>
+              
+
               <div className="sm:col-span-2 lg:col-span-4">
                 <button
                   onClick={handleCreateUser}

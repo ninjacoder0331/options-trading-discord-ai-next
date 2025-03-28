@@ -79,17 +79,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signout = async () => {
-    
-      await setUser(null);
-      
-      await Cookies.remove('authToken');
-      await Cookies.remove('role');
-      await Cookies.remove('user_id');
-      await delete apiClient.defaults.headers.common['Authorization'];
-      router.push("/signin");
-      await window.location.reload();
+    try {
+      // Clear user state first
+      setUser(null);
+
+      // Clear all cookies
+      Object.keys(Cookies.get()).forEach(cookieName => {
+        Cookies.remove(cookieName, { path: '/' }); // Add path to ensure cookie is removed
+      });
+
+      // Clear API headers if you're using them
+      if (apiClient.defaults.headers.common['Authorization']) {
+        delete apiClient.defaults.headers.common['Authorization'];
+      }
+
+      // Show success message
       toast.success('Successfully signed out');
 
+      // Navigate to signin page
+      await router.replace('/signin');
+      
+      // Optional: Force reload only if necessary
+      window.location.href = '/signin';
+    } catch (error) {
+      console.error('Signout error:', error);
+      toast.error('Error signing out');
+    }
   };
 
   // Check auth on mount and URL changes

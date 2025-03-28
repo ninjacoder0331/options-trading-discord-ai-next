@@ -17,8 +17,8 @@ const TraderDashboard = () => {
   const [analysts, setAnalysts] = useState([]);
   const [openPositions, setOpenPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [tickers, setTickers] = useState([]);
   const [closePositions, setClosePositions] = useState([]);
+  const [traderAnalysts, setTraderAnalysts] = useState([]);
   // function
 
   // const getOptionsChain = async () => {
@@ -58,9 +58,14 @@ const TraderDashboard = () => {
     return response;
   }
 
-  const getTickers = async () => {
-    const response = await apiClient.get('/api/trader/getAllTickers');
-    setTickers(response.data);
+  const getTraderAnalysts = async () => {
+    console.log("traderId", Cookies.get('user_id'));
+    const response = await apiClient.post('/api/trader/getTraderAnalysts' , 
+      { traderId : Cookies.get('user_id')}
+    )
+      setTraderAnalysts(response.data);
+      console.log("traderAnalysts", response.data);
+ 
     return response;
   }
 
@@ -76,10 +81,11 @@ const TraderDashboard = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const [analystResponse, optionsPositionResponse , closePositionResponse] = await Promise.all([
+        const [analystResponse, optionsPositionResponse , closePositionResponse , traderAnalystsResponse] = await Promise.all([
           getAnalysts(),
           getOpenPositions(),
-          getClosePositions()
+          getClosePositions(),
+          getTraderAnalysts()
           // getTickers()
         ]);
         
@@ -99,24 +105,25 @@ const TraderDashboard = () => {
   }
 
   return (
+
     <div className="flex flex-col gap-4">
-      <div className="flex flex-row gap-4 justify-between" key={1}>
-        {analysts[0].status === "start" && (
+      <div className="flex flex-row gap-4 justify-center" key={1}>
+        {analysts[0].status === "start" && traderAnalysts["analyst1"] && (
           <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
             <Analyst analyst={analysts[0]} getOpenPositions={getOpenPositions} />
           </div>
         )}
-        {analysts[1].status === "start" && (
+        {analysts[1].status === "start" && traderAnalysts["analyst2"] && (
           <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
             <Analyst analyst={analysts[1]} getOpenPositions={getOpenPositions} />
           </div>
         )}
-        {analysts[2].status === "start" && (
+        {analysts[2].status === "start" && traderAnalysts["analyst3"] && (
         <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
             <Analyst analyst={analysts[2]} getOpenPositions={getOpenPositions} />
         </div>
         )}
-        {analysts[3].status === "start" && (
+        {analysts[3].status === "start" && traderAnalysts["analyst4"] && (
         <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
             <Analyst analyst={analysts[3]} getOpenPositions={getOpenPositions} />
         </div>

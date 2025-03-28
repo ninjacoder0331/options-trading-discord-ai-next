@@ -97,15 +97,16 @@ const TraderTable = () => {
     });
   };
 
-  const handleAnalystChange = (traderId: string, analystId: string) => {
+  const handleAnalystChange = (traderId: string, analystId: string, analystNumber: number) => {
     // setSelectedAnalyst(analystId);
     console.log(traderId, analystId);
     apiClient.post("/api/trader/updateAnalyst", {
       traderId: traderId,
-      analystId: analystId
+      analystId: analystId,
+      analystNumber: analystNumber
     })
     .then(response => {
-      toast.success("Analyst updated successfully");
+      toast.success("Analyst"+analystNumber+" updated successfully");
       console.log(response.data);
       getTraders();
     })
@@ -232,7 +233,16 @@ const TraderTable = () => {
                   Brokerage
                 </th>
                 <th className="whitespace-nowrap px-2 py-2 text-left text-sm font-semibold text-gray-800 dark:text-gray-200 w-20">
-                  Analyst
+                  Analyst1
+                </th>
+                <th className="whitespace-nowrap px-2 py-2 text-left text-sm font-semibold text-gray-800 dark:text-gray-200 w-20">
+                  Analyst2
+                </th>
+                <th className="whitespace-nowrap px-2 py-2 text-left text-sm font-semibold text-gray-800 dark:text-gray-200 w-20">
+                  Analyst3
+                </th>
+                <th className="whitespace-nowrap px-2 py-2 text-left text-sm font-semibold text-gray-800 dark:text-gray-200 w-20">
+                  Analyst4
                 </th>
                 <th className="whitespace-nowrap px-2 py-2 text-left text-sm font-semibold text-gray-800 dark:text-gray-200 w-20">
                   Actions
@@ -266,8 +276,47 @@ const TraderTable = () => {
 
                   <td className="px-2 py-2 text-sm">
                     <select
-                      value={trader.analyst || ''}
-                      onChange={(e) => handleAnalystChange(trader._id, e.target.value)}
+                      value={trader.analyst1 || ''}
+                      onChange={(e) => handleAnalystChange(trader._id, e.target.value , 1)}
+                      className="w-full rounded-md border border-gray-300 bg-white px-1 py-0.5 text-blue-500 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700"
+                    >
+                      <option value="">Select</option>
+                      {analysts?.map((item, index) => (
+                        <option key={index} value={item._id}>{item.name}</option>
+                      ))}
+                    </select>
+                  </td>
+
+                  <td className="px-2 py-2 text-sm">
+                    <select
+                      value={trader.analyst2 || ''}
+                      onChange={(e) => handleAnalystChange(trader._id, e.target.value , 2)}
+                      className="w-full rounded-md border border-gray-300 bg-white px-1 py-0.5 text-blue-500 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700"
+                    >
+                      <option value="">Select</option>
+                      {analysts?.map((item, index) => (
+                        <option key={index} value={item._id}>{item.name}</option>
+                      ))}
+                    </select>
+                  </td>
+
+                  <td className="px-2 py-2 text-sm">
+                    <select
+                      value={trader.analyst3 || ''}
+                      onChange={(e) => handleAnalystChange(trader._id, e.target.value , 3)}
+                      className="w-full rounded-md border border-gray-300 bg-white px-1 py-0.5 text-blue-500 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700"
+                    >
+                      <option value="">Select</option>
+                      {analysts?.map((item, index) => (
+                        <option key={index} value={item._id}>{item.name}</option>
+                      ))}
+                    </select>
+                  </td>
+
+                  <td className="px-2 py-2 text-sm">
+                    <select
+                      value={trader.analyst4 || ''}
+                      onChange={(e) => handleAnalystChange(trader._id, e.target.value , 4)}
                       className="w-full rounded-md border border-gray-300 bg-white px-1 py-0.5 text-blue-500 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700"
                     >
                       <option value="">Select</option>

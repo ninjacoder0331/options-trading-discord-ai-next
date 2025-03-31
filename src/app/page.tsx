@@ -18,7 +18,7 @@ export default function Home() {
   }, [pathname]);
   return (
     <>
-      {!token ? <Hero /> : ""}
+      {!token ? <Hero /> : <AdminHome/> }
     </>
   );
 }

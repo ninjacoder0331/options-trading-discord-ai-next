@@ -5,12 +5,6 @@ export const NAV_DATA = [
     label: "MAIN MENU",
     items: [
       {
-        title: "Home",
-        url: "/",
-        icon: Icons.HomeIcon,
-        items: [],
-      },
-      {
         title: "Open Trades",
         url: "/open-trades",
         icon: Icons.Table,
@@ -47,15 +41,15 @@ export const NAV_DATA = [
         items: [],
       },
       {
-        title: "Brokerage Setup",
-        url: "/brokerage-setup",
-        icon: Icons.Alphabet,
+        title: "Analyst Setup",
+        url: "/analyst-setup",
+        icon: Icons.User,
         items: [],
       },
       {
-        title: "Logout",
-        url: "/logout",
-        icon: Icons.Authentication,
+        title: "Brokerage Setup",
+        url: "/brokerage-setup",
+        icon: Icons.Alphabet,
         items: [],
       },
     ],

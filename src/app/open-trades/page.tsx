@@ -10,3 +10,4 @@ const OpenTrades = () => {
 }
 
 export default OpenTrades; 
+

@@ -55,6 +55,7 @@ const TraderDashboard = () => {
   const getAnalysts = async () => {
     const response = await apiClient.get('/api/trader/getAnalysts');
     setAnalysts(response.data);
+    console.log("analysts", response.data);
     return response;
   }
 
@@ -108,7 +109,21 @@ const TraderDashboard = () => {
 
     <div className="flex flex-col gap-4">
       <div className="flex flex-row gap-4 justify-center" key={1}>
-        {analysts[0].status === "start" && traderAnalysts["analyst1"] && (
+
+        {analysts.map((analyst, index) => {
+          for(let i = 0; i < 4; i++) {
+            if(analyst.status === "start" && traderAnalysts[`analyst${i + 1}`] === analyst["_id"]) {
+              return (
+                <div key={analyst._id} className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
+                  <Analyst analyst={analyst} getOpenPositions={getOpenPositions} />
+                </div>
+              );
+            }
+          }
+          return null; // Return null for analysts that don't match the condition
+        })}
+
+        {/* {analysts[0].status === "start" && traderAnalysts["analyst1"] && (
           <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
             <Analyst analyst={analysts[0]} getOpenPositions={getOpenPositions} />
           </div>
@@ -127,7 +142,7 @@ const TraderDashboard = () => {
         <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
             <Analyst analyst={analysts[3]} getOpenPositions={getOpenPositions} />
         </div>
-         )}
+         )} */}
       </div>
       
       <div className="rounded-lg bg-white p-6 shadow-1 dark:bg-gray-dark" key={2}>

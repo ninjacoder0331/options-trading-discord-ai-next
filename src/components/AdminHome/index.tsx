@@ -62,6 +62,15 @@ const AdminHome = () => {
     setOpenPositions(response.data.positions);
     return response;
   }
+  useEffect(() => {
+    const interval = setInterval(() => {
+      console.log("hello");
+    }, 5000); // Run every 5 seconds
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
+  }, []);
+
 
   const getTraders = () => {
     return apiClient.get('/api/trader/getTraders')

@@ -19,30 +19,7 @@ const TraderDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [closePositions, setClosePositions] = useState([]);
   const [traderAnalysts, setTraderAnalysts] = useState([]);
-  // function
 
-  // const getOptionsChain = async () => {
-  //   const apiKey = process.env.NEXT_PUBLIC_ALPACA_API_KEY;
-  //   const secretKey = process.env.NEXT_PUBLIC_ALPACA_SECRET_KEY;
-
-  //   const headers = {
-  //     "accept": "application/json",
-  //     'APCA-API-KEY-ID': apiKey,
-  //     'APCA-API-SECRET-KEY': secretKey
-  //   }
-
-  //   const baseUrl = 'https://data.alpaca.markets/v1beta1/options/snapshots/SPY?limit=100&type=call&expiration_date=2025-03-12'
-
-  //   const response = await fetch(`${baseUrl}`, {
-  //     headers: headers
-  //   }).then(response => response.json()).then(data => {
-  //     console.log("response snapshot");
-  //     console.log(data);
-  //   })
-  // }
-
-
-  // Method 1: Using .then()
 
   const getOpenPositions = async () => {
     const response = await apiClient.post('/api/trader/getTraderOpenPositions' , {
@@ -90,8 +67,6 @@ const TraderDashboard = () => {
           // getTickers()
         ]);
         
-        // console.log("analystResponse", analystResponse);
-        // console.log("optionsPositionResponse", optionsPositionResponse);
       } catch (error) {
         console.error('Error:', error);
       } finally {
@@ -123,26 +98,6 @@ const TraderDashboard = () => {
           return null; // Return null for analysts that don't match the condition
         })}
 
-        {/* {analysts[0].status === "start" && traderAnalysts["analyst1"] && (
-          <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
-            <Analyst analyst={analysts[0]} getOpenPositions={getOpenPositions} />
-          </div>
-        )}
-        {analysts[1].status === "start" && traderAnalysts["analyst2"] && (
-          <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
-            <Analyst analyst={analysts[1]} getOpenPositions={getOpenPositions} />
-          </div>
-        )}
-        {analysts[2].status === "start" && traderAnalysts["analyst3"] && (
-        <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
-            <Analyst analyst={analysts[2]} getOpenPositions={getOpenPositions} />
-        </div>
-        )}
-        {analysts[3].status === "start" && traderAnalysts["analyst4"] && (
-        <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
-            <Analyst analyst={analysts[3]} getOpenPositions={getOpenPositions} />
-        </div>
-         )} */}
       </div>
       
       <div className="rounded-lg bg-white p-6 shadow-1 dark:bg-gray-dark" key={2}>

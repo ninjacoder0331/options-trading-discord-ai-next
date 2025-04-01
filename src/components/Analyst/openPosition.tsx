@@ -61,34 +61,34 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
           <table className="w-full table-auto border-collapse">
             <thead>
               <tr className="bg-primary/10 dark:bg-primary/5">
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Open Positions
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Call/Put
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Analyst
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Entry
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Current Price
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Time in
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Profit per Contract
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   ROI
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                {/* <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Total Position
-                </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                </th> */}
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Positions Open
                 </th>
                 <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
@@ -135,29 +135,29 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
               {
                 openPositions.map((position , key) => (
                   <tr className="border-b border-gray-200 text-center hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800" key={key}>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.symbol}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.date}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.analyst}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.entryPrice}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.currentPrice}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                      {getMinutesDifference(position.created_at)}
+                    <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">{position.orderSymbol}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">{position.date}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">{position.analyst}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">{position.entryPrice}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">{position.currentPrice}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">
+                      {position["timeDifference"]}
                     </td>
-                    <td className={`px-4 py-3 text-sm ${(position.currentPrice - position.entryPrice) >= 0 
+                    <td className={`px-4 py-3 text-center text-sm ${(position.currentPrice - position.entryPrice) >= 0 
                       ? 'text-green-600 dark:text-green-400' 
                       : 'text-red-600 dark:text-red-400'}`}>
                       {(position.currentPrice - position.entryPrice).toFixed(2)}
                     </td>
-                    <td className={`px-4 py-3 text-sm ${(position.currentPrice - position.entryPrice) >= 0 
+                    <td className={`px-4 py-3 text-center text-sm ${(position.currentPrice - position.entryPrice) >= 0 
                       ? 'text-green-600 dark:text-green-400' 
                       : 'text-red-600 dark:text-red-400'}`}>
                       {(((position.currentPrice - position.entryPrice) / position.entryPrice) * 100).toFixed(2)}%
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+                    {/* <td className="px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">
                       {position.amount}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                      {position.amount - position.soldAmount}
+                    </td> */}
+                    <td className="px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">
+                      {((position.amount - position.soldAmount)/position.amount * 100).toFixed(1)}%
                     </td>
                     <td className="px-4 py-3 text-center">
                       <button 

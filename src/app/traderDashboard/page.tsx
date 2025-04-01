@@ -83,7 +83,7 @@ const TraderDashboard = () => {
   return (
 
     <div className="flex flex-col gap-4">
-      <div className="flex flex-row gap-4 justify-center" key={1}>
+      <div className="flex flex-col md:flex-row gap-4 justify-center" key={1}>
 
         {analysts.map((analyst, index) => {
           for(let i = 0; i < 4; i++) {

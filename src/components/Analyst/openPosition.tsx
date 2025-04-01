@@ -137,7 +137,7 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
                   <tr className="border-b border-gray-200 text-center hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800" key={key}>
                     <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">{position.symbol}</td>
                     <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">
-                      {position.date } <br/> {position.childType + " " + position.strikePrice}
+                      {position.date } <br/> {position.childType + " $" + position.strikePrice}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">{position.analyst}</td>
                     <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">{position.entryPrice}</td>

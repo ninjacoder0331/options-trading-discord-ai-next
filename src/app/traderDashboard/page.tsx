@@ -20,6 +20,16 @@ const TraderDashboard = () => {
   const [closePositions, setClosePositions] = useState([]);
   const [traderAnalysts, setTraderAnalysts] = useState([]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getOpenPositions();
+    }, 5000); // Run every 5 seconds
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
+  }, []);
+
+  // Method 1: Using .then()
 
   const getOpenPositions = async () => {
     const response = await apiClient.post('/api/trader/getTraderOpenPositions' , {
@@ -32,17 +42,17 @@ const TraderDashboard = () => {
   const getAnalysts = async () => {
     const response = await apiClient.get('/api/trader/getAnalysts');
     setAnalysts(response.data);
-    console.log("analysts", response.data);
+    // console.log("analysts", response.data);
     return response;
   }
 
   const getTraderAnalysts = async () => {
-    console.log("traderId", Cookies.get('user_id'));
+    // console.log("traderId", Cookies.get('user_id'));
     const response = await apiClient.post('/api/trader/getTraderAnalysts' , 
       { traderId : Cookies.get('user_id')}
     )
       setTraderAnalysts(response.data);
-      console.log("traderAnalysts", response.data);
+      // console.log("traderAnalysts", response.data);
  
     return response;
   }
@@ -67,6 +77,8 @@ const TraderDashboard = () => {
           // getTickers()
         ]);
         
+        // console.log("analystResponse", analystResponse);
+        // console.log("optionsPositionResponse", optionsPositionResponse);
       } catch (error) {
         console.error('Error:', error);
       } finally {
@@ -83,7 +95,7 @@ const TraderDashboard = () => {
   return (
 
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col md:flex-row gap-4 justify-center" key={1}>
+      <div className="flex flex-row gap-4 justify-center" key={1}>
 
         {analysts.map((analyst, index) => {
           for(let i = 0; i < 4; i++) {
@@ -98,6 +110,26 @@ const TraderDashboard = () => {
           return null; // Return null for analysts that don't match the condition
         })}
 
+        {/* {analysts[0].status === "start" && traderAnalysts["analyst1"] && (
+          <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
+            <Analyst analyst={analysts[0]} getOpenPositions={getOpenPositions} />
+          </div>
+        )}
+        {analysts[1].status === "start" && traderAnalysts["analyst2"] && (
+          <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
+            <Analyst analyst={analysts[1]} getOpenPositions={getOpenPositions} />
+          </div>
+        )}
+        {analysts[2].status === "start" && traderAnalysts["analyst3"] && (
+        <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
+            <Analyst analyst={analysts[2]} getOpenPositions={getOpenPositions} />
+        </div>
+        )}
+        {analysts[3].status === "start" && traderAnalysts["analyst4"] && (
+        <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
+            <Analyst analyst={analysts[3]} getOpenPositions={getOpenPositions} />
+        </div>
+         )} */}
       </div>
       
       <div className="rounded-lg bg-white p-6 shadow-1 dark:bg-gray-dark" key={2}>

@@ -54,10 +54,12 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
         <div 
           className="fixed inset-0 bg-black/50"
           onClick={onClose}
-        ></div>
+        >
+
+        </div>
 
         {/* Changed width and height to 3/4 of screen */}
-        <div className="relative z-[1001] h-[75vh] w-[40vw] rounded-lg bg-white shadow-xl dark:bg-gray-800">
+        <div className="relative z-[1003] h-[80vh] w-[90vw] md:w-[35vw] rounded-lg bg-white shadow-xl dark:bg-gray-800">
           {/* Header */}
           <div className="border-b border-gray-200 p-4 dark:border-gray-700">
             <div className="flex items-center justify-between">
@@ -101,19 +103,19 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
               <table className="w-full table-auto border-collapse">
                 <thead className="sticky top-0 bg-white dark:bg-gray-800">
                   <tr>
-                    <th className="border-b border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                    <th className="border-b border-gray-200 bg-gray-100 py-3 px-2 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
                       Strike Price
                     </th>
-                    <th className="border-b border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                    <th className="border-b border-gray-200 bg-gray-100 py-3 px-2 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
                       Mid Price
                     </th>
-                    <th className="border-b border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                    <th className="border-b border-gray-200 bg-gray-100 py-3 px-2 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
                       Bid Price
                     </th>
-                    <th className="border-b border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                    <th className="border-b border-gray-200 bg-gray-100 py-3 px-2 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
                       Ask Price
                     </th>
-                    <th className="border-b border-gray-200 bg-gray-100 px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                    <th className="border-b border-gray-200 bg-gray-100 py-3 px-2 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
                       Symbol
                     </th>
                   </tr>
@@ -127,7 +129,16 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
                     })
                     .map(([key, quote]: [string, any], index) => {
                       const strikePrice = Number(quote.strike_price) || 0;
-                      const isNearCurrentPrice = Math.abs(strikePrice - currentPrice) <= 5;
+                      
+                      let isNearCurrentPrice = false;
+
+                      if(!isNearCurrentPrice) {
+                        isNearCurrentPrice = Math.abs(strikePrice - currentPrice) <= 2; 
+                      }
+
+                      if(!isNearCurrentPrice) {
+                        isNearCurrentPrice = Math.abs(strikePrice - currentPrice) <= 1;
+                      }
                       
                       return (
                         <tr 

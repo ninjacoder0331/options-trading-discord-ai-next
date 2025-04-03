@@ -26,6 +26,7 @@ const Analyst = ({analyst , getOpenPositions}) => {
   const [optionType, setOptionType] = useState("call");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPrice, setCurrentPrice] = useState(0);
+  const [bidPrice, setBidPrice] = useState(0);
   const [optionsData, setOptionsData] = useState(null);
   const [contractData, setContractData] = useState(null);
   const [orderSymbol, setOrderSymbol] = useState("");
@@ -138,6 +139,8 @@ const Analyst = ({analyst , getOpenPositions}) => {
       const data3 = await response3.json();
       // console.log("Quote data:", data3);
       const currentPrice = (data3.quote.ap + data3.quote.bp) / 2;
+      const bidPrice = data3.quote.bp;
+      setBidPrice(bidPrice);
       setCurrentPrice(currentPrice);
       console.log("Current price:", currentPrice);
       console.log("data3", data3.quote.ap);
@@ -192,6 +195,9 @@ const Analyst = ({analyst , getOpenPositions}) => {
         toast.success("Order placed successfully");
       else if(res.data == 422) {
         toast.info("Please check the order details or market time");
+      }
+      if(res.data == 201) {
+        toast.info("Market data is change, please check again the bid price");
       }
       // console.log("result", res.data);
     }).catch(err => {

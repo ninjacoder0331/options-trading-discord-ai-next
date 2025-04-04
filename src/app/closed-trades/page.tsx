@@ -28,6 +28,8 @@ const ClosedTrades = () => {
   const [analysts , setAnalysts] = useState([]);
   const [traders , setTraders] = useState([]);
   const [percentage, setPercentage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
  
 
   const sellAmount = (id) => {
@@ -54,7 +56,10 @@ const ClosedTrades = () => {
 
   const getOpenPositions = async () => {
     const response = await apiClient.get('/api/trader/getClosePositions');
-    setOpenPositions(response.data.positions);
+    const result = response.data.positions.sort((a, b) => 
+      new Date(b.exitDate).getTime() - new Date(a.exitDate).getTime()
+    );
+    setOpenPositions(result);
     return response;
   }
 
@@ -126,7 +131,43 @@ const ClosedTrades = () => {
     return <div>Loading...</div>
   }
     return (
-        <div className="overflow-x-auto  text-base rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-dark">
+        <div className="overflow-x-auto text-base rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-dark">
+          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-700 dark:text-gray-300">Rows per page:</span>
+              <select
+                className="bg-white border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                value={rowsPerPage}
+                onChange={(e) => {
+                  setRowsPerPage(Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={15}>15</option>
+              </select>
+            </div>
+            <div className="flex items-center space-x-2">
+              <button
+                className="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                Page {currentPage} of {Math.ceil(openPositions.length / rowsPerPage)}
+              </span>
+              <button
+                className="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(openPositions.length / rowsPerPage)))}
+                disabled={currentPage === Math.ceil(openPositions.length / rowsPerPage)}
+              >
+                Next
+              </button>
+            </div>
+          </div>
           <table className="w-full table-auto border-collapse">
             <thead>
               <tr className="bg-primary/10 dark:bg-primary/5">
@@ -168,7 +209,9 @@ const ClosedTrades = () => {
             <tbody>
               
               {
-                openPositions.map((position , key) => (
+                openPositions
+                  .slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
+                  .map((position , key) => (
                   <tr className="border-b border-gray-200 text-center hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800" key={key}>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                       {position.symbol + " " + (position.childType=="call" ? "C" : "P") + " $" + position.strikePrice}<br/>

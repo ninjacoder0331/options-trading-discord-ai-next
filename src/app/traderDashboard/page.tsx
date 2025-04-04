@@ -23,7 +23,7 @@ const TraderDashboard = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       getOpenPositions();
-    }, 5000); // Run every 5 seconds
+    }, 1000); // Run every 1 seconds
 
     // Cleanup interval on component unmount
     return () => clearInterval(interval);
@@ -109,27 +109,6 @@ const TraderDashboard = () => {
           }
           return null; // Return null for analysts that don't match the condition
         })}
-
-        {/* {analysts[0].status === "start" && traderAnalysts["analyst1"] && (
-          <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
-            <Analyst analyst={analysts[0]} getOpenPositions={getOpenPositions} />
-          </div>
-        )}
-        {analysts[1].status === "start" && traderAnalysts["analyst2"] && (
-          <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
-            <Analyst analyst={analysts[1]} getOpenPositions={getOpenPositions} />
-          </div>
-        )}
-        {analysts[2].status === "start" && traderAnalysts["analyst3"] && (
-        <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
-            <Analyst analyst={analysts[2]} getOpenPositions={getOpenPositions} />
-        </div>
-        )}
-        {analysts[3].status === "start" && traderAnalysts["analyst4"] && (
-        <div className="p-6 rounded-xl bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
-            <Analyst analyst={analysts[3]} getOpenPositions={getOpenPositions} />
-        </div>
-         )} */}
       </div>
       
       <div className="rounded-lg bg-white p-6 shadow-1 dark:bg-gray-dark" key={2}>

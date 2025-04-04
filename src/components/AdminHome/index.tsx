@@ -65,7 +65,7 @@ const AdminHome = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       getOpenPositions();
-    }, 5000); // Run every 5 seconds
+    }, 1000); // Run every 1 seconds
 
     // Cleanup interval on component unmount
     return () => clearInterval(interval);

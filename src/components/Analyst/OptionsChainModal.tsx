@@ -103,19 +103,19 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
               <table className="w-full table-auto border-collapse">
                 <thead className="sticky top-0 bg-white dark:bg-gray-800">
                   <tr>
-                    <th className="border-b border-gray-200 bg-gray-100 py-3 px-2 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                    <th className="border-b border-gray-200 bg-gray-100 py-1 px-2 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
                       Strike Price
                     </th>
-                    <th className="border-b border-gray-200 bg-gray-100 py-3 px-2 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                    <th className="border-b border-gray-200 bg-gray-100 py-1 px-2 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
                       Mid Price
                     </th>
-                    <th className="border-b border-gray-200 bg-gray-100 py-3 px-2 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                    <th className="border-b border-gray-200 bg-gray-100 py-1 px-2 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
                       Bid Price
                     </th>
-                    <th className="border-b border-gray-200 bg-gray-100 py-3 px-2 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                    <th className="border-b border-gray-200 bg-gray-100 py-1 px-2 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
                       Ask Price
                     </th>
-                    <th className="border-b border-gray-200 bg-gray-100 py-3 px-2 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                    <th className="border-b border-gray-200 bg-gray-100 py-1 px-2 text-left text-sm font-semibold text-gray-900 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
                       Symbol
                     </th>
                   </tr>
@@ -157,20 +157,20 @@ const OptionsChainModal: FC<OptionsChainModalProps> = ({ isOpen, onClose, data, 
                             // setAlertOpen(true);
                           }}
                         >
-                          <td className="px-6 py-4 text-sm text-emerald-500 dark:text-emerald-400 font-bold">
+                          <td className="px-2 py-1 text-sm text-emerald-500 dark:text-emerald-400 font-bold">
                             {quote.strike_price || '-'}
                           </td>
-                          <td className="px-6 py-4 text-sm text-rose-500 dark:text-rose-400 font-bold">
+                          <td className="px-2 py-1 text-sm text-rose-500 dark:text-rose-400 font-bold">
                             {((quote.bidPrice + quote.askPrice)/2).toFixed(2) || '-'}
                           </td>
-                          <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
+                          <td className="px-2 py-1 text-sm text-gray-900 dark:text-gray-300">
                             {quote.bidPrice || '-'}
                           </td>
-                          <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
+                          <td className="px-2 py-1 text-sm text-gray-900 dark:text-gray-300">
                             {quote.askPrice || '-'}
                           </td>
                           
-                          <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
+                          <td className="px-2 py-1 text-sm text-gray-900 dark:text-gray-300">
                             {quote.root_symbol || '-'}
                           </td>
                         </tr>

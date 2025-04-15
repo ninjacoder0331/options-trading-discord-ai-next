@@ -46,16 +46,16 @@ const Anlystics = ({closePositions}) => {
           <table className="w-full table-auto border-collapse">
             <thead>
               <tr className="bg-primary/10 dark:bg-primary/5">
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Analyst
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Wins
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Loses
                 </th>
-                <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+                <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   % Wins
                 </th>
               </tr>
@@ -70,10 +70,10 @@ const Anlystics = ({closePositions}) => {
               {
                 newClosePositions.map((position , index) => (
                   <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.analyst}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.wins}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{(position.losses).toFixed(0)}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{(position.percentage).toFixed(0)}%</td>
+                    <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{position.analyst}</td>
+                    <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{position.wins}</td>
+                    <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{(position.losses).toFixed(0)}</td>
+                    <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{(position.percentage).toFixed(0)}%</td>
                   </tr>
                 ))
               }

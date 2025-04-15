@@ -1,9 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import apiClient from '@/lib/axios';
-import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation';
 interface Brokerage {
   _id: string;
   brokerageName: string;
@@ -13,50 +10,38 @@ interface Brokerage {
   accountNumber: string;
   apiInfo: string;
   apiLink: string;
+  name?: string;
+  email?: string;
+  API_KEY?: string;
+  SECRET_KEY?: string;
 }
 
-const BrokerageTable = ({ data , setIsLoaded }: { data: Brokerage[] , setIsLoaded: (isLoaded: boolean) => void }) => {
-  const router = useRouter();
-  const handleDelete = async (brokerage: string) => {
-    try {
-      console.log("brokerage id", brokerage);
-      await apiClient.post("/api/brokerage/deleteBrokerage", {brokerageId: brokerage});
-      toast.success("Brokerage deleted successfully");
-      // setIsLoaded(true);
-      window.location.reload();
-      // Refresh table data after deletion
-    } catch (error) {
-      toast.error("Error deleting brokerage");
-      console.error('Error deleting brokerage:', error);
-    }
-  };
+const BrokerageTable = ({ data , SelectTrader }: { data: Brokerage[] , SelectTrader: (trader: any) => void}) => {
+  
 
   return (
     <table className="w-full table-auto border-collapse">
       <thead>
         <tr className="bg-primary/10 dark:bg-primary/5">
-          <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+          <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
+            No
+          </th>
+          <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
             Brokerage Name
           </th>
-          <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
-            Brokerage
+          <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
+            Name
           </th>
-          <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
-            Login Name
+          <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
+            Email
           </th>
-          <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
-            PW
+          <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
+            API Key
           </th>
-          <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
-            Account #
+          <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
+            Secret Key
           </th>
-          <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
-            Other API Info
-          </th>
-          <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
-            API link
-          </th>
-          <th className="whitespace-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-800 dark:text-gray-200">
+          <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
             Actions
           </th>
         </tr>
@@ -64,20 +49,20 @@ const BrokerageTable = ({ data , setIsLoaded }: { data: Brokerage[] , setIsLoade
       <tbody>
         {
           data.map((brokerage , index) => (
-          <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{brokerage.brokerageName}</td>
-            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{brokerage.brokerage}</td>
-            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{brokerage.loginName}</td>
-            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{brokerage.password}</td>
-            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{brokerage.accountNumber}</td>
-            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{brokerage.apiInfo}</td>
-            <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{brokerage.apiLink}</td>
-            <td className="px-4 py-3">
+          <tr key={index} className="border-b cursor-pointer border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+          >
+            <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{index + 1}</td>
+            <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{brokerage.brokerageName}</td>
+            <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{brokerage.name || ""}</td>
+            <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{brokerage.email || ""}</td>
+            <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{brokerage.API_KEY || ""}</td>
+            <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{brokerage.SECRET_KEY || ""}</td>
+            <td className="px-4 py-3 text-center">
               <button
-                onClick={() => handleDelete(brokerage._id)}
-                className="rounded-lg bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500/50"
+                className="rounded-lg bg-red-500 px-3 py-1 text-sm text-center text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500/50"
+                onClick={() => SelectTrader(brokerage)}
               >
-                Delete
+                Update
               </button>
             </td>
           </tr>

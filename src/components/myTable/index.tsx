@@ -126,8 +126,6 @@ const TraderTable = () => {
         toast.error('Please fill all the fields');
         return;
       }
-
-    if(editTraderId !== ""){
       const amount = newUser.amount;
       const stopLoss = newUser.stopLoss;
       const profitTaking = newUser.profitTaking;
@@ -142,30 +140,33 @@ const TraderTable = () => {
         traderId
       }
 
+    if(editTraderId !== ""){
+      
       console.log(payload)
-
       apiClient.post("/api/auth/updateTrader", payload)
       .then(response => {
         toast.success("Trader updated successfully");
         console.log(response.data);
         getTraders();
       })
-      
     }
+
     else{
-    try {
-      // console.log(newUser);
-      await authService.signup({
-        email,
-        password,
-        name,
-      });
+      try {
+        // console.log(newUser);
+        apiClient.post("/api/auth/traderSignup", payload).then(response => {
+          toast.success('User created successfully');
+          getTraders();
+          setNewUser({ name: '', login: '', password: '', tradeAmt: '', amount: '', stopLoss: '', profitTaking: '' }); // Reset form
+          
+        })
+        .catch(error => {
+          toast.error('Failed to create user. Please check the email');
+          console.error('Error:', error);
+        });
       
-      toast.success('User created successfully');
-      getTraders();
-      setNewUser({ name: '', login: '', password: '', tradeAmt: '', amount: '', stopLoss: '', profitTaking: '' }); // Reset form
     } catch (error) {
-      toast.error('Failed to create user');
+      toast.error('Failed to create user. Please check the email');
         console.error('Error:', error);
       }
     }

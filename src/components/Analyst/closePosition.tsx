@@ -30,20 +30,20 @@ const ClosePosition = ({closePositions}) => {
                 {
                   closePositions.map((position , index) => (
                     <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-                      <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.symbol}</td>
-                      <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.entryPrice}</td>
-                      <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.closePrice}</td>
-                      <td className={`px-4 py-3 text-sm ${(position.closePrice - position.entryPrice) >= 0 
+                      <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">{position.symbol}</td>
+                      <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">${position.entryPrice}</td>
+                      <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">${position.closePrice}</td>
+                      <td className={`px-4 py-3 text-center text-sm ${(position.closePrice - position.entryPrice) >= 0 
                         ? 'text-green-600 dark:text-green-400' 
                         : 'text-red-600 dark:text-red-400'}`}>
                         {(position.closePrice - position.entryPrice).toFixed(2)}
                       </td>
-                      <td className={`px-4 py-3 text-sm ${(position.closePrice - position.entryPrice) >= 0 
+                      <td className={`px-4 py-3 text-center text-sm ${(position.closePrice - position.entryPrice) >= 0 
                         ? 'text-green-600 dark:text-green-400' 
                         : 'text-red-600 dark:text-red-400'}`}>
                         {((position.closePrice - position.entryPrice) / position.entryPrice * 100).toFixed(2)}%
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.analyst}</td>
+                      <td className="px-4 py-3  text-center text-sm text-gray-700 dark:text-gray-300">{position.analyst}</td>
                     </tr>
                   ))
                 }

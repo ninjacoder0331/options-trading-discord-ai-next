@@ -196,6 +196,9 @@ const Analyst = ({analyst , getOpenPositions}) => {
       else if(res.data == 422) {
         toast.info("Please check the order details or market time");
       }
+      else if(res.data == 429){
+        toast.info("Please check the account api and secret key");
+      }
       if(res.data == 201) {
         toast.info("Market data is change, please check again the bid price");
       }

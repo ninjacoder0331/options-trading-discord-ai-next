@@ -62,14 +62,14 @@ const AdminHome = () => {
     setOpenPositions(response.data.positions);
     return response;
   }
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getOpenPositions();
-    }, 1000); // Run every 1 seconds
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     getOpenPositions();
+  //   }, 3000); // Run every 1 seconds
 
     // Cleanup interval on component unmount
-    return () => clearInterval(interval);
-  }, []);
+    // return () => clearInterval(interval);
+  // }, []);
 
 
   const getTraders = () => {
@@ -207,8 +207,8 @@ const AdminHome = () => {
                       )}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.analyst}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.entryPrice}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{position.currentPrice}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">${position.entryPrice}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">${position.currentPrice}</td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                       {position.amount}
                     </td>
@@ -218,7 +218,7 @@ const AdminHome = () => {
                     <td className={`px-4 py-3 text-sm ${(position.currentPrice - position.entryPrice) >= 0 
                       ? 'text-green-600 dark:text-green-400' 
                       : 'text-red-600 dark:text-red-400'}`}>
-                      {((position.currentPrice - position.entryPrice)*position.soldAmount *100).toFixed(2)}
+                      {((position.currentPrice - position.entryPrice)*(position.amount - position.soldAmount) *100) < 0 ? '-' : ''}${Math.abs((position.currentPrice - position.entryPrice)*(position.amount - position.soldAmount) *100).toFixed(2)}
                     </td>
                     <td className={`px-4 py-3 text-sm ${(position.currentPrice - position.entryPrice) >= 0 
                       ? 'text-green-600 dark:text-green-400' 

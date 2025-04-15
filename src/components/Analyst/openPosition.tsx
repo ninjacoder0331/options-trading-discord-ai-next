@@ -40,8 +40,8 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
       toast.error("Amount is less than 1");
       return;
     }
-    console.log("payload", payload);
-    const result = apiClient.post("/api/trader/sellAmount", payload).then(res => {
+    console.log("payload1", payload);
+    apiClient.post("/api/trader/sellAmount", payload).then(res => {
       if(res.data == 200){
         toast.success("Order placed successfully");
         getOpenPositions();
@@ -55,6 +55,8 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
       console.log("err", err);
       toast.error("Error selling all positions");
     })
+
+  
   }
     return (
         <div className="overflow-x-auto">
@@ -140,15 +142,15 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
                       {position.date } <br/> {position.childType + " $" + position.strikePrice}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">{position.analyst}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">{position.entryPrice}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">{position.currentPrice}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">${position.entryPrice}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">${position.currentPrice}</td>
                     <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">
                       {position["timeDifference"]}
                     </td>
                     <td className={`px-4 py-3 text-center text-sm ${(position.currentPrice - position.entryPrice) >= 0 
                       ? 'text-green-600 dark:text-green-400' 
                       : 'text-red-600 dark:text-red-400'}`}>
-                      {(position.currentPrice - position.entryPrice).toFixed(2)}
+                      ${(position.currentPrice - position.entryPrice).toFixed(2)}
                     </td>
                     <td className={`px-4 py-3 text-center text-sm ${(position.currentPrice - position.entryPrice) >= 0 
                       ? 'text-green-600 dark:text-green-400' 

@@ -60,6 +60,7 @@ const ClosedTrades = () => {
       new Date(b.exitDate).getTime() - new Date(a.exitDate).getTime()
     );
     setOpenPositions(result);
+    console.log("result", result);
     return response;
   }
 
@@ -227,21 +228,23 @@ const ClosedTrades = () => {
                       })}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                      {position.entryPrice}
+                      ${position.entryPrice}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                      {position.closePrice}
+                      ${position.closePrice}
                     </td>
                     <td className={`px-4 py-3 text-sm ${(position.closePrice - position.entryPrice) >= 0 
                       ? 'text-green-600 dark:text-green-400' 
                       : 'text-red-600 dark:text-red-400'}`}>
-                      {(position.closePrice - position.entryPrice).toFixed(2)}
+                      {(position.closePrice - position.entryPrice) < 0 ? '-' : ''}${Math.abs(position.closePrice - position.entryPrice).toFixed(2)}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                       {position.soldAmount}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                      {((position.closePrice - position.entryPrice)*position.soldAmount * 100).toFixed(2)}`
+                    <td className={`px-4 py-3 text-sm ${((position.closePrice - position.entryPrice)*position.soldAmount * 100) >= 0 
+                      ? 'text-green-600 dark:text-green-400' 
+                      : 'text-red-600 dark:text-red-400'}`}>
+                      {((position.closePrice - position.entryPrice)*position.soldAmount * 100) < 0 ? '-' : ''}${Math.abs((position.closePrice - position.entryPrice)*position.soldAmount * 100).toFixed(0)}
                     </td>
                     <td className={`px-4 py-3 text-sm ${(position.closePrice - position.entryPrice) >= 0 
                       ? 'text-green-600 dark:text-green-400' 
@@ -249,30 +252,30 @@ const ClosedTrades = () => {
                       {(((position.closePrice - position.entryPrice) / position.entryPrice) * 100).toFixed(2)}%
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                    {new Date(position.created_at).toLocaleString('en-US', {
-                      month: '2-digit',
-                      day: '2-digit',
-                      year: 'numeric'
-                    })}
-                    <br/>
-                    {new Date(position.created_at).toLocaleString('en-US', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      hour12: true
-                    })}
+                      {new Date(position.created_at).toLocaleString('en-US', {
+                        month: '2-digit',
+                        day: '2-digit',
+                        year: 'numeric'
+                      })}
+                      <br/>
+                      {new Date(position.created_at).toLocaleString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                      })}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                    {new Date(position.exitDate).toLocaleString('en-US', {
-                      month: '2-digit',
-                      day: '2-digit',
-                      year: 'numeric'
-                    })}
-                    <br/>
-                    {new Date(position.exitDate).toLocaleString('en-US', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      hour12: true
-                    })}
+                      {new Date(position.exitDate).toLocaleString('en-US', {
+                        month: '2-digit',
+                        day: '2-digit',
+                        year: 'numeric'
+                      })}
+                      <br/>
+                      {new Date(position.exitDate).toLocaleString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                      })}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                       {traders.map((trader, key) => 

@@ -28,7 +28,6 @@ const AdminHome = () => {
   const [analysts , setAnalysts] = useState([]);
   const [traders , setTraders] = useState([]);
   const [percentage, setPercentage] = useState(0);
- 
 
   const sellAmount = (id) => {
 
@@ -58,6 +57,7 @@ const AdminHome = () => {
 
   const getOpenPositions = async () => {
     const response = await apiClient.get('/api/trader/getOpenPositions');
+    console.log("response closed", response.data.positions);
     setOpenPositions(response.data.positions);
     return response;
   }

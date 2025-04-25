@@ -139,7 +139,10 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
                   <tr className="border-b border-gray-200 text-center hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800" key={key}>
                     <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">{position.symbol}</td>
                     <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">
-                      {position.date } <br/> {position.childType + " $" + position.strikePrice}
+                      <div className="flex flex-wrap gap-1 items-center text-center">
+                        <span className="whitespace-nowrap items-center">{position.date}</span>
+                        <span className="whitespace-nowrap items-center text-center">{position.childType} ${position.strikePrice}</span>
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">{position.analyst}</td>
                     <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">${position.entryPrice}</td>

@@ -32,7 +32,6 @@ const AdminHome = () => {
 
   const sellAmount = (id) => {
 
-
     let amount = parseInt((id.amount * percentage / 100).toString());
     const restamount = id.amount - id.soldAmount;
 
@@ -62,14 +61,6 @@ const AdminHome = () => {
     setOpenPositions(response.data.positions);
     return response;
   }
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     getOpenPositions();
-  //   }, 3000); // Run every 1 seconds
-
-    // Cleanup interval on component unmount
-    // return () => clearInterval(interval);
-  // }, []);
 
 
   const getTraders = () => {

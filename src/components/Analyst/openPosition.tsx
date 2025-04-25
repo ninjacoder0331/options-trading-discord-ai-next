@@ -48,7 +48,7 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
         getClosePositions();
       }
       else{
-        toast.info("Please check the order details or market time");
+        toast.info("Please check the api_key and secret key or market time");
       }
             
     }).catch(err => {

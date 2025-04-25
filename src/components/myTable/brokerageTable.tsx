@@ -14,6 +14,7 @@ interface Brokerage {
   email?: string;
   API_KEY?: string;
   SECRET_KEY?: string;
+  liveTrading?: boolean;
 }
 
 const BrokerageTable = ({ data , SelectTrader }: { data: Brokerage[] , SelectTrader: (trader: any) => void}) => {
@@ -42,6 +43,9 @@ const BrokerageTable = ({ data , SelectTrader }: { data: Brokerage[] , SelectTra
             Secret Key
           </th>
           <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
+            Live Trading
+          </th>
+          <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
             Actions
           </th>
         </tr>
@@ -57,6 +61,12 @@ const BrokerageTable = ({ data , SelectTrader }: { data: Brokerage[] , SelectTra
             <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{brokerage.email || ""}</td>
             <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{brokerage.API_KEY || ""}</td>
             <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{brokerage.SECRET_KEY || ""}</td>
+            <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">
+              <div className="flex items-center justify-center">
+                <div className={`w-4 h-4 rounded-full ${brokerage.liveTrading ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                <span className="ml-2">{brokerage.liveTrading ? "Enabled" : "Disabled"}</span>
+              </div>
+            </td>
             <td className="px-4 py-3 text-center">
               <button
                 className="rounded-lg bg-red-500 px-3 py-1 text-sm text-center text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500/50"

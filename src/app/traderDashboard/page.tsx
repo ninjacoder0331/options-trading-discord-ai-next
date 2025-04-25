@@ -23,7 +23,7 @@ const TraderDashboard = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       getOpenPositions();
-    }, 1000); // Run every 1 seconds
+    }, 10000); // Run every 1 seconds
 
     // Cleanup interval on component unmount
     return () => clearInterval(interval);

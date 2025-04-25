@@ -19,6 +19,7 @@ const BrokerageSetup = () => {
   const [traderEmail, setTraderEmail] = useState("")
   const [brokerageName, setBrokerageName] = useState("")
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [liveTrading, setLiveTrading] = useState(false);
 
   // Change this from a direct Promise to a function
   const getBrokerages = () => {
@@ -44,6 +45,7 @@ const BrokerageSetup = () => {
         brokerageName: brokerageName,
         API_KEY: apiKey,
         SECRET_KEY: secretKey,
+        liveTrading: liveTrading,
       })
       .then(response => {
         toast.success("Brokerage updated successfully");
@@ -70,6 +72,8 @@ const BrokerageSetup = () => {
       else setTraderEmail("")
       if(trader.brokerageName) setBrokerageName(trader.brokerageName)
       else setBrokerageName("")
+      if(trader.liveTrading) setLiveTrading(trader.liveTrading)
+      else setLiveTrading(false)
     }
   }
 
@@ -96,14 +100,14 @@ const BrokerageSetup = () => {
   }
 
     return (
-      <div className="space-y-8 w-full mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="space-y-4 md:space-y-8 w-full mx-auto px-2 sm:px-4 lg:px-8">
        
-        <div className="overflow-x-auto rounded-lg bg-white p-6 shadow-1 dark:bg-gray-dark w-full" >
+        <div className="overflow-x-auto rounded-lg bg-white p-4 sm:p-6 shadow-1 dark:bg-gray-dark w-full" >
           <BrokerageTable data = {brokerage} SelectTrader = {SelectTrader}/>
         </div>
         
-        <div className="flex flex-col w-full bg-white p-8 shadow-lg dark:bg-gray-dark rounded-xl">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 w-full">
+        <div className="flex flex-col w-full bg-white p-4 sm:p-6 md:p-8 shadow-lg dark:bg-gray-dark rounded-xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6 w-full">
             <div className="flex flex-col space-y-2">
               <label htmlFor="brokerageName" className="text-sm font-medium text-gray-700 dark:text-gray-300">Brokerage Name</label>
               <input 
@@ -111,7 +115,7 @@ const BrokerageSetup = () => {
                 id="brokerageName"
                 value={brokerageName} 
                 onChange={(e) => setBrokerageName(e.target.value)} 
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-blue-500" 
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 sm:px-4 py-2 sm:py-2.5 text-sm text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-blue-500" 
               />
             </div>
             <div className="flex flex-col space-y-2">
@@ -121,7 +125,7 @@ const BrokerageSetup = () => {
                 id="traderName"
                 value={traderName} 
                 readOnly 
-                className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400" 
+                className="w-full rounded-lg border border-gray-300 bg-gray-50 px-3 sm:px-4 py-2 sm:py-2.5 text-sm text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400" 
               />
             </div>
             <div className="flex flex-col space-y-2">
@@ -131,7 +135,7 @@ const BrokerageSetup = () => {
                 id="traderEmail"
                 value={traderEmail} 
                 readOnly 
-                className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400" 
+                className="w-full rounded-lg border border-gray-300 bg-gray-50 px-3 sm:px-4 py-2 sm:py-2.5 text-sm text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400" 
               />
             </div>
             <div className="flex flex-col space-y-2">
@@ -141,7 +145,7 @@ const BrokerageSetup = () => {
                 id="apiKey"
                 value={apiKey} 
                 onChange={(e) => setApiKey(e.target.value)} 
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-blue-500" 
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 sm:px-4 py-2 sm:py-2.5 text-sm text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-blue-500" 
               />
             </div>
             <div className="flex flex-col space-y-2">
@@ -151,14 +155,26 @@ const BrokerageSetup = () => {
                 id="secretKey"
                 value={secretKey} 
                 onChange={(e) => setSecretKey(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-blue-500" 
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 sm:px-4 py-2 sm:py-2.5 text-sm text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-blue-500" 
               />
             </div>
+            <div className="flex flex-col space-y-2">
+              <label htmlFor="liveTrading" className="text-sm font-medium text-gray-700 dark:text-gray-300">Live Trading</label>
+              <div className="relative flex items-center h-full">
+                <input 
+                  type="checkbox" 
+                  id="liveTrading"
+                  checked={liveTrading}
+                  onChange={(e) => setLiveTrading(e.target.checked)}
+                  className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-primary dark:checked:border-primary transition-colors duration-200" 
+                />
+              </div>
+            </div>
           </div>
-          <div className="flex justify-center mt-8">
+          <div className="flex justify-center mt-6 sm:mt-8">
             <button 
               onClick={handleUpdateClick}
-              className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+              className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 sm:px-6 py-2 sm:py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
             >
               Update Brokerage
             </button>
@@ -168,23 +184,25 @@ const BrokerageSetup = () => {
         {/* Confirmation Modal */}
         {showConfirmModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 max-w-md w-full mx-4 shadow-xl">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 Confirm Update
               </h3>
               <p className="text-gray-600 dark:text-gray-300 mb-6">
                 Before update the API key and Secret key, please make sure that there is no open position.
+
+                And if you are doing live trading or paper trading, please make sure that the API key and Secret key are correct.
               </p>
               <div className="flex justify-end space-x-4">
                 <button
                   onClick={handleCancelUpdate}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500/50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                  className="px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500/50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={updateTrader}
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  className="px-3 sm:px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 >
                   Confirm Update
                 </button>

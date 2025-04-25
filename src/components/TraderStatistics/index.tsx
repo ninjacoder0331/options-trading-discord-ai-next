@@ -10,8 +10,8 @@ const TraderStatistics = ({analysts , traders , closePositions , getTraders}) =>
   const [selectedTrader , setSelectedTrader] = useState(null);
 
   useEffect(()=>{
-    // console.log("traders", traders);
-    // console.log("closePositions", closePositions);
+    console.log("traders", traders);
+    console.log("closePositions", closePositions);
     setIsLoading(true);
     setTraderStatistics([]);
     for(let i=0; i<traders.length; i++){
@@ -22,7 +22,7 @@ const TraderStatistics = ({analysts , traders , closePositions , getTraders}) =>
       let startDate = null;
       
       for(let j = 0; j<closePositions.length; j++){
-        if(traders[i]._id === closePositions[j].userID && closePositions[j].status === "close"){
+        if(traders[i]._id === closePositions[j].userID && closePositions[j].status === "closed"){
           totalTrades += 1;
           if(closePositions[j].entryPrice < closePositions[j].closePrice){
             wins += 1;
@@ -118,8 +118,12 @@ const TraderStatistics = ({analysts , traders , closePositions , getTraders}) =>
                 <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{trader.wins}</td>
                 <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{trader.losses}</td>
                 <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{(trader.wins / trader.totalTrades * 100).toFixed(2)}%</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{(trader.totalProfit).toFixed(2)}</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{(trader.totalProfit / trader.totalTrades).toFixed(2)}</td>
+                <td className={`px-4 py-3 text-sm ${trader.totalProfit >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                  {trader.totalProfit >= 0 ? `$${trader.totalProfit.toFixed(2)}` : `-$${Math.abs(trader.totalProfit).toFixed(2)}`}
+                </td>
+                <td className={`px-4 py-3 text-sm ${(trader.totalProfit / trader.totalTrades) >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                  {(trader.totalProfit / trader.totalTrades) >= 0 ? `$${(trader.totalProfit / trader.totalTrades).toFixed(2)}` : `-$${Math.abs(trader.totalProfit / trader.totalTrades).toFixed(2)}`}
+                </td>
                 <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                   {new Date(trader.startDate).toLocaleString('en-US', {
                       month: '2-digit',

@@ -19,6 +19,7 @@ const Statistics = () => {
   const getclosePositions = async () => {
     const response = await apiClient.get('/api/trader/getClosePositions');
     setClosePositions(response.data.positions);
+    console.log("closePositions", response.data.positions);
     return response;
   }
 

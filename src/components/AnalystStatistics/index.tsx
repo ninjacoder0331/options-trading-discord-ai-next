@@ -22,7 +22,7 @@ import { toast } from "react-toastify";
       let startDate = null;
       
       for(let j = 0; j<closePositions.length; j++){
-        if(analysts[i].name === closePositions[j].analyst && closePositions[j].status === "close"){
+        if(analysts[i].name === closePositions[j].analyst && closePositions[j].status === "closed"){
           totalTrades += 1;
           if(closePositions[j].entryPrice < closePositions[j].closePrice){
             wins += 1;
@@ -117,8 +117,12 @@ import { toast } from "react-toastify";
                 <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{analyst.wins}</td>
                 <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{analyst.losses}</td>
                 <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{(analyst.wins / analyst.totalTrades * 100).toFixed(2)}%</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{(analyst.totalProfit).toFixed(2)}</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{(analyst.totalProfit / analyst.totalTrades).toFixed(2)}</td>
+                <td className={`px-4 py-3 text-sm ${analyst.totalTrades > 0 ? (analyst.totalProfit >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400') : 'text-gray-700 dark:text-gray-300'}`}>
+                  {analyst.totalTrades > 0 ? (analyst.totalProfit >= 0 ? `$${analyst.totalProfit.toFixed(2)}` : `-$${Math.abs(analyst.totalProfit).toFixed(2)}`) : '$0.00'}
+                </td>
+                <td className={`px-4 py-3 text-sm ${analyst.totalTrades > 0 ? ((analyst.totalProfit / analyst.totalTrades) >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400') : 'text-gray-700 dark:text-gray-300'}`}>
+                  {analyst.totalTrades > 0 ? ((analyst.totalProfit / analyst.totalTrades) >= 0 ? `$${(analyst.totalProfit / analyst.totalTrades).toFixed(2)}` : `-$${Math.abs(analyst.totalProfit / analyst.totalTrades).toFixed(2)}`) : '$0.00'}
+                </td>
                 <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{analyst.startDate}</td>
                 <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                   <button className={" text-white " + (analyst.status === "start" ? " bg-red-500 " : " bg-blue-500 ") + " px-4 py-2 rounded-md"} onClick={() => {setShowConfirm(true); setSelectedAnalyst(analyst._id);}}>

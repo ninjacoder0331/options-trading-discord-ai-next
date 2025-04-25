@@ -69,7 +69,11 @@ export function HeaderDashboard() {
               <Link 
                 href={item.url} 
                 key={item.title}
-                className="px-2 py-1 text-sm lg:text-base hover:text-primary transition-colors"
+                className={`px-2 py-1 text-sm lg:text-base transition-colors ${
+                  pathname === item.url 
+                    ? 'text-primary font-semibold' 
+                    : 'hover:text-primary'
+                }`}
               >
                 {item.title}
               </Link>

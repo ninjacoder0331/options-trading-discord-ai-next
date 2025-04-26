@@ -153,7 +153,7 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
                     <td className={`px-4 py-3 text-center text-sm ${(position.currentPrice - position.entryPrice) >= 0 
                       ? 'text-green-600 dark:text-green-400' 
                       : 'text-red-600 dark:text-red-400'}`}>
-                      ${(position.currentPrice - position.entryPrice).toFixed(2)}
+                      {(position.currentPrice - position.entryPrice) >= 0 ? `$${(position.currentPrice - position.entryPrice).toFixed(2)}` : `-$${Math.abs(position.currentPrice - position.entryPrice).toFixed(2)}`}
                     </td>
                     <td className={`px-4 py-3 text-center text-sm ${(position.currentPrice - position.entryPrice) >= 0 
                       ? 'text-green-600 dark:text-green-400' 

@@ -8,13 +8,14 @@ import {
 } from "@/components/ui/dropdown";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 import { LogOutIcon, SettingsIcon, UserIcon } from "./icons";
 import { useAuth } from "@/providers/AuthProvider";
+import { ChangePasswordModal } from "@/components/ChangePasswordModal";
 
 export function UserInfo() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const { signout } = useAuth();
   const USER = {
     name: "John Smith",
@@ -23,98 +24,95 @@ export function UserInfo() {
   };
 
   return (
-    <Dropdown isOpen={isOpen} setIsOpen={setIsOpen}>
-      <DropdownTrigger className="rounded align-middle outline-none ring-primary ring-offset-2 focus-visible:ring-1 dark:ring-offset-gray-dark">
-        <span className="sr-only">My Account</span>
+    <>
+      <Dropdown isOpen={isOpen} setIsOpen={setIsOpen}>
+        <DropdownTrigger className="rounded align-middle outline-none ring-primary ring-offset-2 focus-visible:ring-1 dark:ring-offset-gray-dark">
+          <span className="sr-only">My Account</span>
 
-        <figure className="flex items-center gap-3">
-          <Image
-            src={USER.img}
-            className="size-12"
-            alt={`Avatar of ${USER.name}`}
-            role="presentation"
-            width={200}
-            height={200}
-          />
-          <figcaption className="flex items-center gap-1 font-medium text-dark dark:text-dark-6 max-[1024px]:sr-only">
-            <span>{USER.name}</span>
-
-            <ChevronUpIcon
-              aria-hidden
-              className={cn(
-                "rotate-180 transition-transform",
-                isOpen && "rotate-0",
-              )}
-              strokeWidth={1.5}
+          <figure className="flex items-center gap-3">
+            <Image
+              src={USER.img}
+              className="size-12"
+              alt={`Avatar of ${USER.name}`}
+              role="presentation"
+              width={200}
+              height={200}
             />
-          </figcaption>
-        </figure>
-      </DropdownTrigger>
+            <figcaption className="flex items-center gap-1 font-medium text-dark dark:text-dark-6 max-[1024px]:sr-only">
+              <span>{USER.name}</span>
 
-      <DropdownContent
-        className="border border-stroke bg-white shadow-md dark:border-dark-3 dark:bg-gray-dark min-[230px]:min-w-[17.5rem]"
-        align="end"
-      >
-        <h2 className="sr-only">User information</h2>
+              <ChevronUpIcon
+                aria-hidden
+                className={cn(
+                  "rotate-180 transition-transform",
+                  isOpen && "rotate-0",
+                )}
+                strokeWidth={1.5}
+              />
+            </figcaption>
+          </figure>
+        </DropdownTrigger>
 
-        <figure className="flex items-center gap-2.5 px-5 py-3.5">
-          <Image
-            src={USER.img}
-            className="size-12"
-            alt={`Avatar for ${USER.name}`}
-            role="presentation"
-            width={200}
-            height={200}
-          />
+        <DropdownContent
+          className="border border-stroke bg-white shadow-md dark:border-dark-3 dark:bg-gray-dark min-[230px]:min-w-[17.5rem]"
+          align="end"
+        >
+          <h2 className="sr-only">User information</h2>
 
-          <figcaption className="space-y-1 text-base font-medium">
-            <div className="mb-2 leading-none text-dark dark:text-white">
-              {USER.name}
-            </div>
+          <figure className="flex items-center gap-2.5 px-5 py-3.5">
+            <Image
+              src={USER.img}
+              className="size-12"
+              alt={`Avatar for ${USER.name}`}
+              role="presentation"
+              width={200}
+              height={200}
+            />
 
-            <div className="leading-none text-gray-6">{USER.email}</div>
-          </figcaption>
-        </figure>
+            <figcaption className="space-y-1 text-base font-medium">
+              <div className="mb-2 leading-none text-dark dark:text-white">
+                {USER.name}
+              </div>
 
-        <hr className="border-[#E8E8E8] dark:border-dark-3" />
+              <div className="leading-none text-gray-6">{USER.email}</div>
+            </figcaption>
+          </figure>
 
-        <div className="p-2 text-base text-[#4B5563] dark:text-dark-6 [&>*]:cursor-pointer">
-          <Link
-            href={"/profile"}
-            onClick={() => setIsOpen(false)}
-            className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
-          >
-            <UserIcon />
+          <hr className="border-[#E8E8E8] dark:border-dark-3" />
 
-            <span className="mr-auto text-base font-medium">View profile</span>
-          </Link>
+          <div className="p-2 text-base text-[#4B5563] dark:text-dark-6 [&>*]:cursor-pointer">
+            <button
+              onClick={() => {
+                setIsOpen(false);
+                setIsPasswordModalOpen(true);
+              }}
+              className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
+            >
+              <UserIcon />
 
-          <Link
-            href={"/pages/settings"}
-            onClick={() => setIsOpen(false)}
-            className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
-          >
-            <SettingsIcon />
+              <span className="mr-auto text-base font-medium">Change Password</span>
+            </button>
+          </div>
 
-            <span className="mr-auto text-base font-medium">
-              Account Settings
-            </span>
-          </Link>
-        </div>
+          <hr className="border-[#E8E8E8] dark:border-dark-3" />
 
-        <hr className="border-[#E8E8E8] dark:border-dark-3" />
+          <div className="p-2 text-base text-[#4B5563] dark:text-dark-6">
+            <button
+              className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
+              onClick={signout}
+            >
+              <LogOutIcon />
 
-        <div className="p-2 text-base text-[#4B5563] dark:text-dark-6">
-          <button
-            className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
-            onClick={signout}
-          >
-            <LogOutIcon />
+              <span className="text-base font-medium">Log out</span>
+            </button>
+          </div>
+        </DropdownContent>
+      </Dropdown>
 
-            <span className="text-base font-medium">Log out</span>
-          </button>
-        </div>
-      </DropdownContent>
-    </Dropdown>
+      <ChangePasswordModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+      />
+    </>
   );
 }

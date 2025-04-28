@@ -40,6 +40,7 @@ import { toast } from "react-toastify";
         losses: losses,
         totalProfit: totalProfit,
         status: analysts[i]?.status,
+        startDate: startDate,
         _id: analysts[i]._id,
       }
       // console.log("traderStatistics", traders[i]);
@@ -99,9 +100,9 @@ import { toast } from "react-toastify";
             <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
               Profit Per Trade
             </th>
-            <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
+            {/* <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
               Start Date
-            </th>
+            </th> */}
             <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
               Start/Stop
             </th>
@@ -110,9 +111,8 @@ import { toast } from "react-toastify";
         <tbody>
           {
               analystStatistics.map((analyst , key) => (
-
               <tr className="border-b border-gray-200 text-center hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800" key={key}>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{analyst.name}</td>
+                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{analyst.name}</td>
                 <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{analyst.totalTrades}</td>
                 <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{analyst.wins}</td>
                 <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{analyst.losses}</td>
@@ -123,7 +123,9 @@ import { toast } from "react-toastify";
                 <td className={`px-4 py-3 text-sm ${analyst.totalTrades > 0 ? ((analyst.totalProfit / analyst.totalTrades) >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400') : 'text-gray-700 dark:text-gray-300'}`}>
                   {analyst.totalTrades > 0 ? ((analyst.totalProfit / analyst.totalTrades) >= 0 ? `$${(analyst.totalProfit / analyst.totalTrades).toFixed(2)}` : `-$${Math.abs(analyst.totalProfit / analyst.totalTrades).toFixed(2)}`) : '$0.00'}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{analyst.startDate}</td>
+                {/* <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+                  {analyst.startDate}
+                </td> */}
                 <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                   <button className={" text-white " + (analyst.status === "start" ? " bg-red-500 " : " bg-blue-500 ") + " px-4 py-2 rounded-md"} onClick={() => {setShowConfirm(true); setSelectedAnalyst(analyst._id);}}>
                     {analyst.status === "start" ? "Stop" : "Start"}

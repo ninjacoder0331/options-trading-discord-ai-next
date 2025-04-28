@@ -86,7 +86,7 @@ export default function RootLayout({
                 {/* <Sidebar /> */}
                 <div className="w-full bg-gray-2 dark:bg-[#020d1a]">
                   <HeaderDashboard />
-                  <main className="isolate mx-auto w-full overflow-hidden p-4 md:p-3 2xl:px-20 2xl:py-5">
+                  <main className="isolate mx-auto w-full overflow-hidden p-4 md:p-3 2xl:px-10 2xl:py-5">
                     {children}
                   </main>
                 </div>

@@ -105,43 +105,15 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
               </tr>
             </thead>
             <tbody>
-              {/* <tr className="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">AAPL</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                  C Feb 5 $223
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">WiseGuy</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">$1.50</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">$2.50</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">35 mins</td>
-                <td className="px-4 py-3 text-sm text-green-600 dark:text-green-400">$1.00</td>
-                <td className="px-4 py-3 text-sm text-green-600 dark:text-green-400">60%</td>
-                <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">100%</td>
-                <td className="px-4 py-3 text-center">
-                  <button className="rounded-lg bg-red-500 px-3 py-1 text-xs text-white hover:bg-red-600">
-                    Sell 1/3
-                  </button>
-                </td>
-                <td className="px-4 py-3 text-center">
-                  <button className="rounded-lg bg-orange-500 px-3 py-1 text-xs text-white hover:bg-orange-600">
-                    Sell Half
-                  </button>
-                </td>
-                <td className="px-4 py-3 text-center">
-                  <button className="rounded-lg bg-red-600 px-3 py-1 text-xs text-white hover:bg-red-700">
-                    Sell All
-                  </button>
-                </td>
-              </tr> */}
-              {/* Add more rows as needed */}
+
               {
                 openPositions.map((position , key) => (
                   <tr className="border-b border-gray-200 text-center hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800" key={key}>
                     <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">{position.symbol}</td>
                     <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">
-                      <div className="flex flex-wrap gap-1 items-center text-center">
-                        <span className="whitespace-nowrap items-center">{position.date}</span>
-                        <span className="whitespace-nowrap items-center text-center">{position.childType} ${position.strikePrice}</span>
+                      <div className="flex items-center text-center">
+                        <span className="whitespace-nowrap">{position.date}</span>
+                        <span className="whitespace-nowrap ml-1">{position.childType} ${position.strikePrice}</span>
                       </div>
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700 text-center dark:text-gray-300">{position.analyst}</td>

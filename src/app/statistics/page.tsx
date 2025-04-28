@@ -42,7 +42,6 @@ const Statistics = () => {
     return response;
   }
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -51,12 +50,8 @@ const Statistics = () => {
           getAnalysts(),
           getclosePositions(),
           getTraders()
-          // getTickers()
         ]);
 
-        
-        // console.log("analystResponse", analystResponse);
-        // console.log("optionsPositionResponse", optionsPositionResponse);
       } catch (error) {
         console.error('Error:', error);
       } finally {

@@ -8,15 +8,6 @@ import apiClient from "@/lib/axios";
 import { stockTickers } from "./data";
 import Cookies from "js-cookie";
 
-const apiKey = process.env.NEXT_PUBLIC_ALPACA_API_KEY;
-const secretKey = process.env.NEXT_PUBLIC_ALPACA_SECRET_KEY;
-
-const headers = {
-  "accept": "application/json",
-  'APCA-API-KEY-ID': apiKey,
-  'APCA-API-SECRET-KEY': secretKey
-}
-
 const Analyst = ({analyst , getOpenPositions}) => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [childType , setChildType] = useState("call");
@@ -120,10 +111,26 @@ const Analyst = ({analyst , getOpenPositions}) => {
         toast.error("Please enter an option type");
         return;
       }
-      
 
+      const keyData = await apiClient.post('/api/brokerage/getkeyData', {
+        userId : Cookies.get('user_id')
+      });
+
+      const apiKey = keyData.data.apiKey;
+      const secretKey = keyData.data.apiSecret;
+      const liveMode = keyData.data.liveMode
+
+      const headers = {
+        "accept": "application/json",
+        'APCA-API-KEY-ID': apiKey,
+        'APCA-API-SECRET-KEY': secretKey
+      }
+
+      let contract_baseUrl = `https://paper-api.alpaca.markets/v2/options/contracts?underlying_symbols=${symbol}&status=active&expiration_date=${date}&type=${optionType}&limit=10000`
       const chain_baseUrl = `https://data.alpaca.markets/v1beta1/options/snapshots/${symbol}?feed=indicative&limit=1000&type=${optionType}&expiration_date=${date}`
-      const contract_baseUrl = `https://paper-api.alpaca.markets/v2/options/contracts?underlying_symbols=${symbol}&status=active&expiration_date=${date}&type=${optionType}&limit=10000`
+      if(liveMode == true){
+        contract_baseUrl = `https://api.alpaca.markets/v2/options/contracts?underlying_symbols=${symbol}&status=active&expiration_date=${date}&type=${optionType}&limit=10000`
+      }
       const quote_baseUrl = `https://data.alpaca.markets/v2/stocks/${symbol}/quotes/latest`
 
       const response = await fetch(chain_baseUrl, { headers });
@@ -188,11 +195,13 @@ const Analyst = ({analyst , getOpenPositions}) => {
     // console.log("payload", payload);
 
     const result = apiClient.post("/api/trader/addPosition", payload).then(res => {
-      setSymbol("");
-      setStrikePrice("");
-      getOpenPositions();
-      if(res.data == 200)
+      if(res.data == 200){
+        setStrikePrice("");
+        setSymbol("");
+        getOpenPositions();
+        setEntryPrice("");
         toast.success("Order placed successfully");
+      }
       else if(res.data == 422) {
         toast.info("Please check the order details or market time");
       }
@@ -201,6 +210,12 @@ const Analyst = ({analyst , getOpenPositions}) => {
       }
       if(res.data == 201) {
         toast.info("Market data is change, please check again the bid price");
+      }
+      if(res.data == 404){
+        toast.info("Please check the user account");
+      }
+      if(res.data == 455){
+        toast.info("Please check the buying power");
       }
       // console.log("result", res.data);
     }).catch(err => {
@@ -325,9 +340,7 @@ const Analyst = ({analyst , getOpenPositions}) => {
       />
     </div>
 
-
-
-    <div className="flex flex-row gap-2">
+    <div className="flex flex-row gap-2 w-full justify-center">
       <button
         onClick={optionsChainForm}
         className="rounded-lg bg-primary px-3 py-1.5 text-white hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50"

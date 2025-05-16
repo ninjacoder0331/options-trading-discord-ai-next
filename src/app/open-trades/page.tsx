@@ -9,5 +9,4 @@ const OpenTrades = () => {
     )
 }
 
-export default OpenTrades; 
-
+export default OpenTrades;

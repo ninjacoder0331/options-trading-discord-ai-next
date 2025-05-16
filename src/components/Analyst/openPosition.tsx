@@ -24,9 +24,7 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
   const [pendingSellId, setPendingSellId] = useState();
   const [percentage, setPercentage] = useState(0);
  
-
   const sellAmount = (id) => {
-
     let amount = parseInt((id.amount * percentage / 100).toString());
     const restamount = id.amount - id.soldAmount;
     if(amount > restamount){
@@ -40,24 +38,15 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
       toast.error("Amount is less than 1");
       return;
     }
-    console.log("payload1", payload);
     apiClient.post("/api/trader/sellAmount", payload).then(res => {
-      if(res.data == 200){
-        toast.success("Order placed successfully");
-        getOpenPositions();
-        getClosePositions();
-      }
-      else{
-        toast.info("Please check the api_key and secret key or market time");
-      }
-            
+      toast.success("Order placed successfully");
+      getOpenPositions();
+      getClosePositions();
     }).catch(err => {
       console.log("err", err);
-      toast.error("Error selling all positions");
+      toast.error("Error selling all positions. Please check market time.");
     })
-
-  
-  }
+}
     return (
         <div className="overflow-x-auto">
           <table className="w-full table-auto border-collapse">
@@ -87,9 +76,6 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
                 <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   ROI
                 </th>
-                {/* <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
-                  Total Position
-                </th> */}
                 <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
                   Positions Open
                 </th>
@@ -132,9 +118,6 @@ const OpenPosition = ({openPositions , getOpenPositions  , getClosePositions}) =
                       : 'text-red-600 dark:text-red-400'}`}>
                       {(((position.currentPrice - position.entryPrice) / position.entryPrice) * 100).toFixed(2)}%
                     </td>
-                    {/* <td className="px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">
-                      {position.amount}
-                    </td> */}
                     <td className="px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">
                       {((position.amount - position.soldAmount)/position.amount * 100).toFixed(1)}%
                     </td>

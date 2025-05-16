@@ -7,8 +7,6 @@ import OpenPosition from "@/components/Analyst/openPosition";
 import ClosePosition from "@/components/Analyst/closePosition";
 import Anlystics from "@/components/Analyst/anlystics";
 import Cookies from "js-cookie";
-import request from 'request';
-import { TradeStationClient } from "tradestation-api-ts";
 import { toast } from "react-toastify";
 
 

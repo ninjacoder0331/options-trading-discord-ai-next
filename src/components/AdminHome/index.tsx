@@ -51,7 +51,7 @@ const AdminHome = () => {
       toast.success("All positions sold successfully");
     }).catch(err => {
       console.log("err", err);
-      toast.error("Error selling all positions");
+      toast.error("Error selling all positions. Please check market time and amount");
     })
   }
 

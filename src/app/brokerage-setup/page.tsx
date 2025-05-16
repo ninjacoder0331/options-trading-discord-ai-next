@@ -5,9 +5,6 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BrokerageTable from "@/components/myTable/brokerageTable";
 
-
-
-
 const BrokerageSetup = () => {
 
   const [brokerage, setBrokerage] = useState<any>(null);
@@ -15,15 +12,13 @@ const BrokerageSetup = () => {
   const [selectedTraderId, setSelectedTraderId] = useState("");
   const [apiKey, setApiKey] = useState("")
   const [secretKey, setSecretKey] = useState("")
-  const [traderName, setTraderName] = useState("")
-  const [traderEmail, setTraderEmail] = useState("")
   const [brokerageName, setBrokerageName] = useState("")
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [liveTrading, setLiveTrading] = useState(false);
 
   // Change this from a direct Promise to a function
   const getBrokerages = () => {
-    return apiClient.get('/api/trader/getTraders')
+    return apiClient.get('/api/brokerage/getBrokerages')
       .then(response => {
         setBrokerage(response.data);
         setIsLoading(false);
@@ -35,11 +30,30 @@ const BrokerageSetup = () => {
       });
   };
 
+  const handleCreateBrokerage = () => {
+    if(brokerageName == ""){
+      toast.info("Please enter brokerage name");
+      return;
+    }
+    apiClient.post("/api/brokerage/createBrokerageTrader", {
+      brokerageName: brokerageName,
+      API_KEY: apiKey,
+      SECRET_KEY: secretKey,
+      liveTrading: liveTrading,
+    })
+    .then(response => {
+      toast.success("Brokerage created successfully");
+      getBrokerages();
+    })
+    .catch(error => {
+      toast.error("Error creating brokerage.");
+      console.error('Error:', error);
+    });
+  }
+
   const updateTrader = () => {
     if(selectedTraderId){
-    
       console.log("selectedTraderId" , selectedTraderId)
-
       apiClient.post("/api/auth/updateBrokerageTrader", {
         traderId: selectedTraderId,
         brokerageName: brokerageName,
@@ -66,10 +80,6 @@ const BrokerageSetup = () => {
       else setApiKey("")
       if(trader.SECRET_KEY) setSecretKey(trader.SECRET_KEY)
       else setSecretKey("")
-      if(trader.name) setTraderName(trader.name)
-      else setTraderName("")
-      if(trader.email) setTraderEmail(trader.email)
-      else setTraderEmail("")
       if(trader.brokerageName) setBrokerageName(trader.brokerageName)
       else setBrokerageName("")
       if(trader.liveTrading) setLiveTrading(trader.liveTrading)
@@ -107,7 +117,7 @@ const BrokerageSetup = () => {
         </div>
         
         <div className="flex flex-col w-full bg-white p-4 sm:p-6 md:p-8 shadow-lg dark:bg-gray-dark rounded-xl">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 w-full">
             <div className="flex flex-col space-y-2">
               <label htmlFor="brokerageName" className="text-sm font-medium text-gray-700 dark:text-gray-300">Brokerage Name</label>
               <input 
@@ -116,26 +126,6 @@ const BrokerageSetup = () => {
                 value={brokerageName} 
                 onChange={(e) => setBrokerageName(e.target.value)} 
                 className="w-full rounded-lg border border-gray-300 bg-white px-3 sm:px-4 py-2 sm:py-2.5 text-sm text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-blue-500" 
-              />
-            </div>
-            <div className="flex flex-col space-y-2">
-              <label htmlFor="traderName" className="text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
-              <input 
-                type="text" 
-                id="traderName"
-                value={traderName} 
-                readOnly 
-                className="w-full rounded-lg border border-gray-300 bg-gray-50 px-3 sm:px-4 py-2 sm:py-2.5 text-sm text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400" 
-              />
-            </div>
-            <div className="flex flex-col space-y-2">
-              <label htmlFor="traderEmail" className="text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-              <input 
-                type="text" 
-                id="traderEmail"
-                value={traderEmail} 
-                readOnly 
-                className="w-full rounded-lg border border-gray-300 bg-gray-50 px-3 sm:px-4 py-2 sm:py-2.5 text-sm text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400" 
               />
             </div>
             <div className="flex flex-col space-y-2">
@@ -158,7 +148,7 @@ const BrokerageSetup = () => {
                 className="w-full rounded-lg border border-gray-300 bg-white px-3 sm:px-4 py-2 sm:py-2.5 text-sm text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:focus:border-blue-500" 
               />
             </div>
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-col space-y-2 items-center">
               <label htmlFor="liveTrading" className="text-sm font-medium text-gray-700 dark:text-gray-300">Live Trading</label>
               <div className="relative flex items-center h-full">
                 <input 
@@ -171,7 +161,13 @@ const BrokerageSetup = () => {
               </div>
             </div>
           </div>
-          <div className="flex justify-center mt-6 sm:mt-8">
+          <div className="flex gap-6 justify-center mt-6 sm:mt-8">
+            <button 
+              onClick={handleCreateBrokerage}
+              className="inline-flex items-center justify-center rounded-lg bg-rose-600 px-4 sm:px-6 py-2 sm:py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+            >
+              Create Brokerage
+            </button>
             <button 
               onClick={handleUpdateClick}
               className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 sm:px-6 py-2 sm:py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 dark:focus:ring-offset-gray-900"

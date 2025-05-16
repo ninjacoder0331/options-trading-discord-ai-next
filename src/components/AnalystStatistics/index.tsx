@@ -30,7 +30,7 @@ import { toast } from "react-toastify";
             losses += 1;
           }
           totalProfit += (closePositions[j].closePrice - closePositions[j].entryPrice) *100 * closePositions[j].amount;
-          startDate = traders[i].created_at;
+          // startDate = traders[i].created_at;
         }
       }
       const analystStatistics = {

@@ -31,12 +31,6 @@ const BrokerageTable = ({ data , SelectTrader }: { data: Brokerage[] , SelectTra
             Brokerage Name
           </th>
           <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
-            Name
-          </th>
-          <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
-            Email
-          </th>
-          <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
             API Key
           </th>
           <th className="whitespace-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-800 dark:text-gray-200">
@@ -57,8 +51,6 @@ const BrokerageTable = ({ data , SelectTrader }: { data: Brokerage[] , SelectTra
           >
             <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{index + 1}</td>
             <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{brokerage.brokerageName}</td>
-            <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{brokerage.name || ""}</td>
-            <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{brokerage.email || ""}</td>
             <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{brokerage.API_KEY || ""}</td>
             <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">{brokerage.SECRET_KEY || ""}</td>
             <td className="px-4 py-3 text-sm text-center text-gray-700 dark:text-gray-300">

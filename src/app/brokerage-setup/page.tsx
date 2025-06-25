@@ -14,6 +14,7 @@ const BrokerageSetup = () => {
   const [secretKey, setSecretKey] = useState("")
   const [brokerageName, setBrokerageName] = useState("")
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showDelConfirmModal , setDelConfirmModal] = useState(false)
   const [liveTrading, setLiveTrading] = useState(false);
 
   // Change this from a direct Promise to a function
@@ -63,6 +64,7 @@ const BrokerageSetup = () => {
       })
       .then(response => {
         toast.success("Brokerage updated successfully");
+        setShowConfirmModal(false)
         handleCancelUpdate();
         getBrokerages();
       })
@@ -70,6 +72,24 @@ const BrokerageSetup = () => {
         toast.error("Error updating brokerage.");
         console.error('Error:', error);
       });
+    }
+  }
+
+  const deleteBrokerage = () =>{
+    if(selectedTraderId){
+      apiClient.post("/api/auth/deleteBrokerage", {
+        traderId : selectedTraderId
+      }).then(
+        response => {
+          toast.success("Brokerage deleted successfully");
+          setDelConfirmModal(false)
+          handleCancelUpdate()
+          getBrokerages()
+        }).catch(
+          error => {
+            toast.error("Error deleting brokerage.")
+          }
+        );
     }
   }
 
@@ -96,10 +116,18 @@ const BrokerageSetup = () => {
     setShowConfirmModal(true);
   };
 
+  const handleDeleteClick = () =>{
+    setDelConfirmModal(true)
+  }
+
   const handleConfirmUpdate = () => {
     setShowConfirmModal(false);
     updateTrader();
   };
+
+  const handleDelCancelUpdate = () =>{
+    setDelConfirmModal(false)
+  }
 
   const handleCancelUpdate = () => {
     setShowConfirmModal(false);
@@ -174,6 +202,12 @@ const BrokerageSetup = () => {
             >
               Update Brokerage
             </button>
+            <button
+              onClick={handleDeleteClick}
+              className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 sm:px-6 py-2 sm:py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+            >
+              Delete Brokerage
+            </button>
           </div>
         </div>
 
@@ -201,6 +235,35 @@ const BrokerageSetup = () => {
                   className="px-3 sm:px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 >
                   Confirm Update
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showDelConfirmModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 max-w-md w-full mx-4 shadow-xl">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                Confirm Deletion
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
+                Are you sure you want to delete this brokerage? This action cannot be undone.
+
+                Please make sure that there are no open positions before deleting the brokerage.
+              </p>
+              <div className="flex justify-end space-x-4">
+                <button
+                  onClick={handleDelCancelUpdate}
+                  className="px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500/50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={deleteBrokerage}
+                  className="px-3 sm:px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500/50"
+                >
+                  Delete Brokerage
                 </button>
               </div>
             </div>
